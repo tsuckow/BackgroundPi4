@@ -13,7 +13,7 @@ typedef bool (WINAPI * winMainf)(int);
 winUpdater Updater;
 winMainf Main;
 
-bool APIENTRY Load(bool Update_Updater, int nFunsterStil)
+bool APIENTRY Load(bool Update_Updater, int nFunsterStil,HINSTANCE thisinstance)
 {
 	if(Update_Updater==true)
 	{

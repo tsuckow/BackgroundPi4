@@ -1,7 +1,7 @@
 [Project]
 FileName=UPDATE.dev
 Name=UPDATE
-UnitCount=2
+UnitCount=4
 Type=3
 Ver=1
 ObjFiles=
@@ -14,7 +14,7 @@ Compiler=-DBUILDING_DLL=1_@@_
 CppCompiler=-DBUILDING_DLL=1_@@_
 Linker=--no-export-all-symbols --add-stdcall-alias_@@_
 IsCpp=1
-Icon=
+Icon=UPDATE.ico
 ExeOutput=../
 ObjectOutput=
 OverrideOutput=0
@@ -53,7 +53,7 @@ BuildCmd=
 Major=1
 Minor=0
 Release=0
-Build=18
+Build=33
 LanguageID=1033
 CharsetID=1252
 CompanyName=Defcon 1 Computer Technologies
@@ -66,4 +66,23 @@ OriginalFilename=UPDATE.DLL
 ProductName=Background Pi Client
 ProductVersion=4
 AutoIncBuildNr=1
+
+[Unit3]
+FileName=exresource.h
+CompileCpp=1
+Folder=UPDATE
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit4]
+FileName=exresource.rc
+Folder=UPDATE
+Compile=1
+Link=0
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
 

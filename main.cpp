@@ -7,8 +7,8 @@
  * * * * * * * * * * * * */
 #include <windows.h>
 
-typedef bool (WINAPI * winUpdate)(int);
-typedef bool (WINAPI * winLoader)(bool,int);
+typedef bool (WINAPI * winUpdate)(int,HINSTANCE);
+typedef bool (WINAPI * winLoader)(bool,int,HINSTANCE);
 winUpdate Update;
 winLoader Loader;
 
@@ -36,7 +36,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 			MessageBox(NULL,"Failed To Bind \"UPDATE.DLL\"","ERROR: BPC.EXE",MB_OK);
 			return 0;
 		}
-		Temp = Update(nFunsterStil);
+		Temp = Update(nFunsterStil,hLib);
 		FreeLibrary(hLib);
 		Update=NULL;
 		
@@ -54,7 +54,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 			MessageBox(NULL,"Failed To Bind \"LOADER.DLL\"","ERROR: BPC.EXE",MB_OK);
 			return 0;
 		}
-		Temp=Loader(Temp,nFunsterStil);
+		Temp=Loader(Temp,nFunsterStil,hLib);
 		FreeLibrary(hLib);
 		Loader=NULL;
 		if(Temp)

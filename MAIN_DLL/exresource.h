@@ -5,12 +5,8 @@
  * Module: Main.DLL      * 
  *                       * 
  * * * * * * * * * * * * */
-#include "BPC_MAIN_DLL.h"
-#include <windows.h>
-#include "exresource.h"
 
-bool APIENTRY Main(int nFunsterStil)
-{
-	MessageBox(NULL,"TODO: Main","Main.DLL",MB_OK);
-	return true;
-}
+//Resource IDS
+#define IDD_SPLASH				1000
+#define IDC_LOAD				100
+#define IDC_STATIC				-1
