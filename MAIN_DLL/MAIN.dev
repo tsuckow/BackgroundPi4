@@ -1,13 +1,13 @@
 [Project]
-FileName=UPDATER.dev
-Name=UPDATER
+FileName=MAIN.dev
+Name=MAIN
 UnitCount=2
 Type=3
 Ver=1
 ObjFiles=
 Includes=
 Libs=
-PrivateResource=UPDATER_private.rc
+PrivateResource=MAIN_private.rc
 ResourceIncludes=
 MakeIncludes=
 Compiler=-DBUILDING_DLL=1_@@_
@@ -18,7 +18,7 @@ Icon=
 ExeOutput=../
 ObjectOutput=
 OverrideOutput=0
-OverrideOutputName=UPDATER.dll
+OverrideOutputName=MAIN.dll
 HostApplication=
 Folders=
 CommandLine=
@@ -30,7 +30,7 @@ CompilerSet=0
 CompilerSettings=0000000001001000000000
 
 [Unit2]
-FileName=BPC_UPDATER_DLL.h
+FileName=BPC_MAIN_DLL.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -53,16 +53,16 @@ BuildCmd=
 Major=1
 Minor=0
 Release=0
-Build=1
+Build=3
 LanguageID=1033
 CharsetID=1252
 CompanyName=Defcon 1 Computer Technologies
 FileVersion=1
-FileDescription=Updates Update.DLL
-InternalName=Updater
+FileDescription=Main Stuff
+InternalName=Main
 LegalCopyright=
 LegalTrademarks=
-OriginalFilename=Updater.DLL
+OriginalFilename=Main.DLL
 ProductName=Background Pi Client
 ProductVersion=4
 AutoIncBuildNr=1

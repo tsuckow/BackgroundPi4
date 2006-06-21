@@ -2,14 +2,14 @@
  * Background Pi Client  * 
  * v4                    * 
  *                       * 
- * Module: Loader.DLL    * 
+ * Module: Main.DLL      * 
  *                       * 
  * * * * * * * * * * * * */
-#ifndef _BPC_LOADER_DLL_H_
-#define _BPC_LOADER_DLL_H_
+#ifndef _BPC_MAIN_DLL_H_
+#define _BPC_MAIN_DLL_H_
 
 # define DLLIMPORT extern "C" __declspec(dllexport)
 
-DLLIMPORT bool Load(bool Update_Updater, int nFunsterStil);
+DLLIMPORT bool Main(int nFunsterStil);
 
-#endif /* _BPC_LOADER_DLL_H_ */
+#endif /* _BPC_MAIN_DLL_H_ */
