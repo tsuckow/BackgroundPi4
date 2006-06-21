@@ -20,7 +20,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 	HINSTANCE hLib=NULL;
 	while(true)
 	{
-		bool Temp=false;
+		bool Temp = false;
 		
 		//Load Update.dll
 		hLib=LoadLibrary("UPDATE.DLL");

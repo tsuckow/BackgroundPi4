@@ -2,14 +2,14 @@
  * Background Pi Client  * 
  * v4                    * 
  *                       * 
- * Module: Update.DLL    * 
+ * Module: Updater.DLL   * 
  *                       * 
  * * * * * * * * * * * * */
-#include "BPC_UPDATE_DLL.h"
+#include "BPC_UPDATER_DLL.h"
 #include <windows.h>
 
-bool APIENTRY Update(int nFunsterStil)
+void APIENTRY Update(int nFunsterStil)
 {
-	MessageBox(NULL,"TODO: Update","Update.DLL",MB_OK);
-	return false;
+	MessageBox(NULL,"TODO: Updater","Updater.DLL",MB_OK);
+	return;
 }
