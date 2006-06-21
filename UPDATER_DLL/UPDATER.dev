@@ -53,7 +53,7 @@ BuildCmd=
 Major=1
 Minor=0
 Release=0
-Build=2
+Build=1
 LanguageID=1033
 CharsetID=1252
 CompanyName=Defcon 1 Computer Technologies
@@ -65,5 +65,5 @@ LegalTrademarks=
 OriginalFilename=Updater.DLL
 ProductName=Background Pi Client
 ProductVersion=4
-AutoIncBuildNr=1
+AutoIncBuildNr=0
 
