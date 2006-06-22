@@ -9,7 +9,7 @@
 #include <windows.h>
 #include "exresource.h"
 
-bool APIENTRY Main(int nFunsterStil)
+bool APIENTRY Main(int nFunsterStil,HINSTANCE instance)
 {
 	MessageBox(NULL,"TODO: Main","Main.DLL",MB_OK);
 	return true;

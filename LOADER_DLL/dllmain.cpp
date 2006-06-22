@@ -8,8 +8,8 @@
 #include "BPC_LOADER_DLL.h"
 #include <windows.h>
 
-typedef void (WINAPI * winUpdater)(int);
-typedef bool (WINAPI * winMainf)(int);
+typedef void (WINAPI * winUpdater)(int,HINSTANCE);
+typedef bool (WINAPI * winMainf)(int,HINSTANCE);
 winUpdater Updater;
 winMainf Main;
 
@@ -31,7 +31,7 @@ bool APIENTRY Load(bool Update_Updater, int nFunsterStil,HINSTANCE thisinstance)
 			MessageBox(NULL,"Failed To Bind \"UPDATER.DLL\"","ERROR: LOADER.DLL",MB_OK);
 			return 0;
 		}
-		Updater(nFunsterStil);
+		Updater(nFunsterStil,hLib);
 		FreeLibrary(hLib);
 		Updater=NULL;
 		return false;
@@ -53,7 +53,7 @@ bool APIENTRY Load(bool Update_Updater, int nFunsterStil,HINSTANCE thisinstance)
 			return 0;
 		}
 		bool Temp = true;
-		Temp=Main(nFunsterStil);
+		Temp=Main(nFunsterStil,hLib);
 		FreeLibrary(hLib);
 		Main=NULL;
 		return Temp;

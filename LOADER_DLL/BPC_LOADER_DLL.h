@@ -11,6 +11,6 @@
 
 # define DLLIMPORT extern "C" __declspec(dllexport)
 
-DLLIMPORT bool Load(bool Update_Updater, int nFunsterStil,HINSTANCE thisinstance);
+DLLIMPORT bool Load(bool, int, HINSTANCE);
 
 #endif /* _BPC_LOADER_DLL_H_ */

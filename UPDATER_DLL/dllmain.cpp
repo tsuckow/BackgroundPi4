@@ -8,7 +8,7 @@
 #include "BPC_UPDATER_DLL.h"
 #include <windows.h>
 
-void APIENTRY Update(int nFunsterStil)
+void APIENTRY Update(int nFunsterStil,HINSTANCE instance)
 {
 	MessageBox(NULL,"TODO: Updater","Updater.DLL",MB_OK);
 	return;
