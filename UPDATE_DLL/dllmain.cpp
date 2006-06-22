@@ -53,7 +53,7 @@ bool APIENTRY Update(int nFunsterStil,HINSTANCE instance)
 	// Run the message loop. It will run until GetMessage() returns 0 
     while (GetMessage (&messages, NULL, 0, 0) > 0)
     {
-        if(!IsDialogMessage(Splashwnd, &messages))
+        if(!IsDialogMessage(Inviswnd, &messages) && !IsDialogMessage(Splashwnd, &messages))
         {
             // Translate virtual-key messages into character messages 
             TranslateMessage(&messages);
