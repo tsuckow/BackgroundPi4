@@ -13,6 +13,12 @@
 SPLASH              BITMAP  DISCARDABLE     "splash.bmp"
 
 //Dialogs
+IDD_INVIS DIALOGEX 0, 0, 50, 50
+STYLE DS_CENTER | WS_POPUP
+FONT 8, "MS Sans Serif"
+{
+}
+
 IDD_SPLASH DIALOGEX 0, 0, 267, 135
 STYLE DS_CENTER | WS_POPUP
 FONT 8, "MS Sans Serif"

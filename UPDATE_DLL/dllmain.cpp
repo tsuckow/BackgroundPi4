@@ -14,10 +14,12 @@
 
 bool Update_Updater = false;
 
+HWND Inviswnd = NULL;
 HWND Splashwnd = NULL;
 
 HANDLE thread = NULL;
 
+LRESULT CALLBACK InvisDialogProcedure (HWND, UINT, WPARAM, LPARAM); //Hidden Dialog
 LRESULT CALLBACK SplashDialogProcedure (HWND, UINT, WPARAM, LPARAM); //Spalsh Dialog
 
 HINSTANCE thisinstance = NULL;
@@ -31,7 +33,7 @@ DWORD WINAPI UpdateThread(void*)
 	PostMessage(Splashwnd,WM_SETLOADTEXT,0,(LPARAM)"None, Exiting...");
 	Sleep(1000);
 	//Update_Updater = true;
-	PostMessage(Splashwnd,WM_RQUIT,0,0);
+	PostMessage(Inviswnd,WM_RQUIT,0,0);
 }
 
 bool APIENTRY Update(int nFunsterStil,HINSTANCE instance)
@@ -39,9 +41,11 @@ bool APIENTRY Update(int nFunsterStil,HINSTANCE instance)
 	thisinstance = instance;
 	
 	//Display Splash Screen If NOT started in minimized
-    Splashwnd = CreateDialog(thisinstance,MAKEINTRESOURCE(IDD_SPLASH),NULL,(DLGPROC)SplashDialogProcedure);
+	Inviswnd = CreateDialog(thisinstance,MAKEINTRESOURCE(IDD_INVIS),NULL,(DLGPROC)InvisDialogProcedure);
+    
     if(nFunsterStil != 7)
     {
+		Splashwnd = CreateDialog(thisinstance,MAKEINTRESOURCE(IDD_SPLASH),Inviswnd,(DLGPROC)SplashDialogProcedure);
 		ShowWindow (Splashwnd, SW_SHOW);
     }
 	
@@ -59,9 +63,29 @@ bool APIENTRY Update(int nFunsterStil,HINSTANCE instance)
     }
     DestroyWindow(Splashwnd);
     Splashwnd=NULL;
+    DestroyWindow(Inviswnd);
+    Inviswnd=NULL;
     Sleep(50);
     CloseHandle(thread);
 	return Update_Updater;
+}
+
+//Invis Dialog
+LRESULT CALLBACK InvisDialogProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    switch (message)                  /* handle the messages */
+    {
+        case WM_INITDIALOG:
+			thread = CreateThread(NULL,0,UpdateThread,NULL,0,NULL); //Returns handle to thread, may be useful...
+            return false;
+            break;
+        case WM_RQUIT:
+			PostQuitMessage(0);
+			break;
+        default:
+            return false;
+    }
+    return 0;
 }
 
 //Splash Dialog
@@ -72,13 +96,9 @@ LRESULT CALLBACK SplashDialogProcedure (HWND hwnd, UINT message, WPARAM wParam, 
         case WM_INITDIALOG:
             SetClassLong(hwnd,GCL_HICON,(long) LoadIcon(thisinstance,"A"));
             SetClassLong(hwnd,GCL_HICONSM,(long) LoadIcon(thisinstance,"A"));
-            PostMessage(Splashwnd,WM_SETLOADTEXT,0,(LPARAM)"Starting Update Thread...");
-            thread = CreateThread(NULL,0,UpdateThread,NULL,0,NULL); //Returns handle to thread, may be useful...
+            SetDlgItemText(hwnd,IDC_LOAD,(char *)"Init...");
             return false;
             break;
-        case WM_RQUIT:
-			PostQuitMessage(0);
-			break;
 		case WM_SETLOADTEXT:
             return SetDlgItemText(hwnd,IDC_LOAD,(char *)lParam);
         default:

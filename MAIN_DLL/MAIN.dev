@@ -14,7 +14,7 @@ Compiler=-DBUILDING_DLL=1_@@_
 CppCompiler=-DBUILDING_DLL=1_@@_
 Linker=--no-export-all-symbols --add-stdcall-alias_@@_
 IsCpp=1
-Icon=
+Icon=MAIN.ico
 ExeOutput=../
 ObjectOutput=
 OverrideOutput=0
