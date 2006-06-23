@@ -11,6 +11,7 @@ bool doExit = true;
 
 HWND Inviswnd = NULL;
 HWND Splashwnd = NULL;
+Config Conf;
 
 HANDLE thread = NULL;
 HINSTANCE thisinstance = NULL;
@@ -54,6 +55,14 @@ void TrayIcon::Remove()
 
 DWORD WINAPI MainThread(void*)
 {
+	Sleep(50);
+	PostMessage(Splashwnd,WM_SETLOADTEXT,0,(LPARAM)"Loading Settings...");
+	if(!Conf.Open())
+	{
+		MessageBox(NULL,"Failed to load Config.cfg","Error: Main.DLL",MB_OK);
+		PostMessage(Inviswnd,WM_RQUIT,0,0);
+		ExitThread(0);
+	}
 	Sleep(999999999);
 	//hGlobalIcon->Remove();
 	//Todo

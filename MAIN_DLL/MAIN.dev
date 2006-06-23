@@ -1,7 +1,7 @@
 [Project]
 FileName=MAIN.dev
 Name=MAIN
-UnitCount=6
+UnitCount=7
 Type=3
 Ver=1
 ObjFiles=
@@ -106,4 +106,14 @@ Link=1
 Priority=1001
 OverrideBuildCmd=0
 BuildCmd=$(CPP) -c windowmessages.cpp -o windowmessages.o $(CXXFLAGS)
+
+[Unit7]
+FileName=config.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
 

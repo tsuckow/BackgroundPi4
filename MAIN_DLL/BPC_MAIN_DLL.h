@@ -8,6 +8,7 @@
  *                       * 
  * * * * * * * * * * * * */
 #include <windows.h>
+#include <fstream>
 #include "exresource.h"
 #include "../dvar.hpp"
 
@@ -22,6 +23,17 @@ extern HANDLE thread;
 extern HINSTANCE thisinstance;
 
 DWORD WINAPI MainThread(void*);
+
+class Config
+{
+	public:
+		Config();
+		bool Open();
+	private:
+		int Resume;
+};
+
+extern Config Conf;
 
 class TrayIcon
 {
