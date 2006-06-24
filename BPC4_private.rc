@@ -1,0 +1,35 @@
+/* THIS FILE WILL BE OVERWRITTEN BY DEV-C++ */
+/* DO NOT EDIT! */
+
+#include <windows.h> // include for version info constants
+
+
+//
+// TO CHANGE VERSION INFORMATION, EDIT PROJECT OPTIONS...
+//
+1 VERSIONINFO
+FILEVERSION 4,0,0,37
+PRODUCTVERSION 4,0,0,37
+FILETYPE VFT_APP
+{
+  BLOCK "StringFileInfo"
+	 {
+		 BLOCK "040904E4"
+		 {
+			 VALUE "CompanyName", "Defcon 1 Computer Technologies"
+			 VALUE "FileVersion", ""
+			 VALUE "FileDescription", "Calculates Decimal Digits of Pi"
+			 VALUE "InternalName", "BackPi"
+			 VALUE "LegalCopyright", ""
+			 VALUE "LegalTrademarks", ""
+			 VALUE "OriginalFilename", "BPC.exe"
+			 VALUE "ProductName", "Background Pi"
+			 VALUE "ProductVersion", "4"
+		 }
+	 }
+  BLOCK "VarFileInfo"
+	 {
+		 VALUE "Translation", 0x0409, 1252
+	 }
+}
+
