@@ -10,92 +10,6 @@
 
 //
 //
-/* BEGIN INTEGER CONVERTION TEMPLATES */
-//
-//
-
-template<class T>
-void DString::sintconstruct(T num)
-{
-    bool negative = false;
-    T a;
-    if(num == 0)
-    {
-        Setval("0");
-        return;
-    }
-    else
-    {
-        Setval("");
-    }
-         
-    if(num < 0)
-    {
-        negative = true;
-        a = num * -1;
-    }
-    else
-    {
-        a = num;
-    }
-    
-    char c [2];
-    c[0] = 0;
-    c[1] = 0;
-    
-    while(a > 0)
-    {
-        c[0] = a - ( (T(a/10))*10 ) + 48;
-        Setval( DString(c) + Getval() );
-        a /= 10;
-    }
-    if(negative)
-    {
-        Setval( DString("-") + Getval() );
-    }
-}
-
-template<class T>
-void DString::uintconstruct(T num)
-{
-    T a;
-    
-    if(num == 0)
-    {
-        Setval("0");
-        return;
-    }
-    else
-    {
-        Setval("");
-    }
-    
-    a = num;
-    
-    char c [2];
-    c[0] = 0;
-    c[1] = 0;
-    
-    while(a > 0)
-    {
-        c[0] = a - ( (T(a/10))*10 ) + 48;
-        Setval( DString(c) + Getval() );
-        a /= 10;
-    }
-}
-
-//
-//
-/* END INTEGER CONVERTION TEMPLATES */
-//
-//
-
-
-
-
-
-//
-//
 /* BEGIN DSTRING CONVERTIONS */
 //
 //
@@ -201,21 +115,21 @@ void DString::Nextchar()
 	}
 }
 
-bool DString::Isend()
+bool DString::Isend() const
 {
 	if(*charpos == 0)
 	return true;
-	charpos++;
-	if(*charpos == 0)
+	//charpos++;
+	if(*(charpos+1) == 0)
 	{
-		charpos--;
+		//charpos--;
 		return true;
 	}
-	charpos--;
+	//charpos--;
 	return false;
 }
 
-DString DString::Getspc()
+DString DString::Getspc() const
 {
 	DString temp;
 	if( !Isend() )
@@ -234,7 +148,7 @@ DString DString::Getspc()
 	return temp;
 }
 
-DString DString::Getsbc()
+DString DString::Getsbc() const
 {
 	DString temp;
 	if( !Isbeg() )
@@ -281,13 +195,28 @@ DString operator+ (const DString StringA,const DString StringB)
     return DString(tempchar);
 }
 
-DString operator+= (DString& StringA,const DString StringB)
+DString operator+= (DString& StringA,DString const & StringB)
 {
     char tempchar[ (strlen(StringA.Getval()) + strlen(StringB.Getval()) + 1) ];
     strcpy( tempchar,StringA.Getval() );
     strcat( tempchar,StringB.Getval() );    
     StringA.Setval(tempchar);
     return StringA;
+}
+
+bool operator== (DString const & StringA,const DString & StringB)
+{
+    return strcmp (StringA,StringB) == 0;
+}
+
+bool operator== (DString const & StringA,const char * StringB)
+{
+    return StringA == (DString)StringB;
+}
+
+bool operator== (const char * StringA,DString const & StringB)
+{
+    return (DString)StringA == StringB;
 }
 //
 //

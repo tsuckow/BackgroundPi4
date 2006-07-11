@@ -1,7 +1,7 @@
 [Project]
 FileName=MAIN.dev
 Name=MAIN
-UnitCount=7
+UnitCount=9
 Type=3
 Ver=1
 ObjFiles=
@@ -12,7 +12,7 @@ ResourceIncludes=
 MakeIncludes=
 Compiler=-DBUILDING_DLL=1_@@_
 CppCompiler=-DBUILDING_DLL=1_@@_
-Linker=--no-export-all-symbols --add-stdcall-alias_@@_
+Linker=--no-export-all-symbols --add-stdcall-alias_@@_-lws2_32_@@_-lgmp_@@_
 IsCpp=1
 Icon=MAIN.ico
 ExeOutput=../
@@ -45,7 +45,7 @@ CompileCpp=1
 Folder=
 Compile=1
 Link=1
-Priority=1000
+Priority=999
 OverrideBuildCmd=0
 BuildCmd=
 
@@ -108,6 +108,26 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit7]
+FileName=..\Config.cfg
+CompileCpp=1
+Folder=
+Compile=0
+Link=0
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit8]
+FileName=..\dvar.hpp
+CompileCpp=1
+Folder=MAIN
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit9]
 FileName=windowmessages.cpp
 CompileCpp=1
 Folder=

@@ -26,13 +26,13 @@ class DString
         DString() { Init(); Setval(""); }
         
         //Conversions <-
-        DString(const short num) { Init(); sintconstruct(num); }
-        DString(const unsigned short num) { uintconstruct(num); }
-        DString(const int num) { Init(); sintconstruct(num); }
-        DString(const unsigned int num) { Init(); uintconstruct(num); }
-        DString(const long num) { Init(); sintconstruct(num); }
-        DString(const unsigned long num) { Init(); uintconstruct(num); }
-        DString(const long long num) { Init(); sintconstruct(num); }
+        DString(const short num) { Init(); this->sintconstruct(num); }
+        DString(const unsigned short num) { this->uintconstruct(num); }
+        DString(const int num) { Init(); this->sintconstruct(num); }
+        DString(const unsigned int num) { Init(); this->uintconstruct(num); }
+        DString(const long num) { Init(); this->sintconstruct(num); }
+        DString(const unsigned long num) { Init(); this->uintconstruct(num); }
+        DString(const long long num) { Init(); this->sintconstruct(num); }
         
         DString(const double);
         
@@ -49,7 +49,7 @@ class DString
         }
                 
         //Conversions ->
-        operator const char* () { return mystring; }
+        operator const char* () const { return mystring; }
         
         //Operators
         DString operator=(const DString);
@@ -67,13 +67,13 @@ class DString
         }
         void Nextchar();
         void Prevchar() { if(charpos!=mystring){ charpos--; } }
-    	char Getchar() { return *charpos; }
+    	char Getchar() const { return *charpos; }
     	void Setchar(const char temp) { if(*charpos!=0 && temp != 0){ *charpos = temp; } }
-    	bool Isend();
-    	bool Isbeg() { return (charpos == mystring); }
+    	bool Isend() const;
+    	bool Isbeg() const { return (charpos == mystring); }
     	void Beg() { charpos = mystring; }
-    	DString Getspc();
-    	DString Getsbc();
+    	DString Getspc() const;
+    	DString Getsbc() const;
     	
         //Unset
         void Destroy()
@@ -101,10 +101,96 @@ class DString
 };
 
 //
+//
+/* BEGIN INTEGER CONVERTION TEMPLATES */
+//
+//
+
+template<class T>
+void DString::sintconstruct(T num)
+{
+    bool negative = false;
+    T a;
+    if(num == 0)
+    {
+        Setval("0");
+        return;
+    }
+    else
+    {
+        Setval("");
+    }
+         
+    if(num < 0)
+    {
+        negative = true;
+        a = num * -1;
+    }
+    else
+    {
+        a = num;
+    }
+    
+    char c [2];
+    c[0] = 0;
+    c[1] = 0;
+    
+    while(a > 0)
+    {
+        c[0] = a - ( (T(a/10))*10 ) + 48;
+        Setval( DString(c) + Getval() );
+        a /= 10;
+    }
+    if(negative)
+    {
+        Setval( DString("-") + Getval() );
+    }
+}
+
+template<class T>
+void DString::uintconstruct(T num)
+{
+    T a;
+    
+    if(num == 0)
+    {
+        Setval("0");
+        return;
+    }
+    else
+    {
+        Setval("");
+    }
+    
+    a = num;
+    
+    char c [2];
+    c[0] = 0;
+    c[1] = 0;
+    
+    while(a > 0)
+    {
+        c[0] = a - ( (T(a/10))*10 ) + 48;
+        Setval( DString(c) + Getval() );
+        a /= 10;
+    }
+}
+
+//
+//
+/* END INTEGER CONVERTION TEMPLATES */
+//
+//
+
+
+//
 /* EXTERNAL DSTRING FUNCTIONS */
 //
 DString operator+ (const DString,const DString);
-DString operator+= (DString&,const DString);
+DString operator+= (DString&,const DString &);
+bool operator== (DString const &,DString const &);
+bool operator== (DString const &,const char *);
+bool operator== (const char *,DString const &);
 DString ftods (const double, const int);
 //
 //
