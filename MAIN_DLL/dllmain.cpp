@@ -308,8 +308,11 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
 		}       
 	}
   percentc(ps,a,N3);
-  time(&time_start);
-  time(&time_resume);
+	time(&time_start);
+	time(&time_resume);
+	timeb Start;//TIME TAKEN
+	timeb Now;//TIME TAKEN
+	ftime(&Start);//TIME TAKEN
 	Stat.Update(6,"Calculating...");
 	
 	{
@@ -334,6 +337,13 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
     Stat.Update(3,timeleft(time_start,ps,tempf));
     
     Stat.Update(7,totaltime(time_start,ps,tempf));
+    
+    ftime(&Now);//TIME TAKEN
+    {
+		long long time = (Now.time*1000+Now.millitm)-(Start.time*1000+Start.millitm);
+    	Stat.Update(8,(DString)time + (DString)" ms.");
+	}
+    ftime(&Start);//TIME TAKEN
     
 	{
 		char statstr[255];

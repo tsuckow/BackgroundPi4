@@ -10,6 +10,7 @@
 #define PI_COM_VERSION 2
  
 #include <windows.h>
+#include <sys/timeb.h>
 #include <fstream>
 #include <math.h>
 #include <gmp.h>
@@ -40,7 +41,7 @@ DWORD WINAPI MainThread(void*);
 
 class StatusDlg
 {
-	#define StatusDlgMax 7
+	#define StatusDlgMax 8
 	public:
 		StatusDlg() 
 			{
@@ -56,6 +57,7 @@ class StatusDlg
 				this->Stats[4]="...";
 				this->Stats[5]="...";
 				this->Stats[6]="Init...";
+				this->Stats[7]="...";
 				this->Stats[7]="...";
 			};
 		~StatusDlg() {DestroyWindow(this->Statuswnd);this->Statuswnd=NULL;};		
