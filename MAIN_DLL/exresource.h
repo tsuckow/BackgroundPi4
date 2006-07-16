@@ -11,6 +11,7 @@
 #define IDD_INVIS				1001
 #define IDD_SPLASH				1000
 
+#define IDC_TTIME				108
 #define IDC_MODE                107
 #define IDC_PERC                106
 #define IDC_ELAP                105

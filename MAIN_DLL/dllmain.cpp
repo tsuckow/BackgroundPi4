@@ -164,17 +164,14 @@ DString timeleft(const time_t & t,const mpf_t & psa,const mpf_t & xa)//Start Tim
     mpf_init_set(ps,psa);
     mpf_init_set(x,xa);
     if(mpf_cmp_ui(x,100) > 0) mpf_set_ui(x,100);
-    mpz_t y,s;
+    mpz_t y;
     mpf_t tempf,tempf2;
     mpz_init(y);
-    mpz_init(s);
     mpf_init(tempf);
     mpf_init(tempf2);
 
-    mpz_set_ui( y, time(NULL) );
-    mpz_sub_ui(y,y,t);
-    mpf_set_ui(tempf,100);
-    mpf_sub(tempf,tempf,x);
+    mpz_set_ui( y, time(NULL)-t );
+    mpf_ui_sub(tempf,100,x);
     mpf_sub(tempf2,x,ps);
     if(mpf_cmp(x,ps)==0)
     {
@@ -184,11 +181,44 @@ DString timeleft(const time_t & t,const mpf_t & psa,const mpf_t & xa)//Start Tim
     }
     mpf_set_z(tempf2,y);
     mpf_mul(tempf,tempf,tempf2);
-    mpz_set_f(s,tempf);
+    mpz_set_f(y,tempf);
     DString tempstr;
-    tempstr = timeformat(s);
+    tempstr = timeformat(y);
     mpz_clear(y);
-    mpz_clear(s);
+    mpf_clear(tempf);
+    mpf_clear(tempf2);
+    mpf_clear(ps);
+    mpf_clear(x);
+    return tempstr;
+}
+
+DString totaltime(const time_t & t,const mpf_t & psa,const mpf_t & xa)//Start Time, Start %, Current %
+{
+    mpf_t ps,x;
+    mpf_init_set(ps,psa);
+    mpf_init_set(x,xa);
+    if(mpf_cmp_ui(x,100) > 0) mpf_set_ui(x,100);
+    mpz_t y;
+    mpf_t tempf,tempf2;
+    mpz_init(y);
+    mpf_init(tempf);
+    mpf_init(tempf2);
+
+    mpz_set_ui( y, time(NULL)-t );
+    mpf_ui_sub(tempf,100,ps);
+    mpf_sub(tempf2,x,ps);
+    if(mpf_cmp(x,ps)==0)
+    {
+        mpf_set_ui(tempf,0);
+    }else{
+        mpf_div(tempf,tempf,tempf2);
+    }
+    mpf_set_z(tempf2,y);
+    mpf_mul(tempf,tempf,tempf2);
+    mpz_set_f(y,tempf);
+    DString tempstr;
+    tempstr = timeformat(y);
+    mpz_clear(y);
     mpf_clear(tempf);
     mpf_clear(tempf2);
     mpf_clear(ps);
@@ -303,6 +333,8 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
     
     Stat.Update(3,timeleft(time_start,ps,tempf));
     
+    Stat.Update(7,totaltime(time_start,ps,tempf));
+    
 	{
 		char statstr[255];
 		PrimeCount(tempf,a);
@@ -402,8 +434,8 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
 	/*...End of slow code*/
 
     mpz_set_ui(temp,5);
-    mpz_set(temp2,n);
-    mpz_sub_ui(temp2,temp2,1);
+    //mpz_set(temp2,n);
+    mpz_sub_ui(temp2,n,1);
     mpz_powm(t,temp,temp2,av);
 
     mpz_mul(s,s,t);
@@ -433,7 +465,7 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
     }    
     //END RESUME SAVE
   }// End Master For Loop
-  
+	  
   //mpz_t av,a,vmax,N,N3,num,den,k,kq1,kq2,kq3,kq4,t,v,s,i,t1,temp,temp2;
   mpz_clear(av);
   mpz_clear(a);
@@ -819,7 +851,6 @@ DWORD WINAPI MainThread(void*)
         
         while(DoComm(counter,sum))
         {
-			MessageBox(NULL,"f","f",MB_OK);
 			Sleep(1);
 		}
         

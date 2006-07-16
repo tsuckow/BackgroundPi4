@@ -1,7 +1,7 @@
 [Project]
 FileName=MAIN.dev
 Name=MAIN
-UnitCount=9
+UnitCount=11
 Type=3
 Ver=1
 ObjFiles=
@@ -136,4 +136,22 @@ Link=1
 Priority=1001
 OverrideBuildCmd=0
 BuildCmd=$(CPP) -c windowmessages.cpp -o windowmessages.o $(CXXFLAGS)
+
+[Unit10]
+FileName=..\Resume.cfg
+Folder=MAIN
+Compile=0
+Link=0
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit11]
+FileName=..\Current.cfg
+Folder=MAIN
+Compile=0
+Link=0
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
 

@@ -40,7 +40,7 @@ DWORD WINAPI MainThread(void*);
 
 class StatusDlg
 {
-	#define StatusDlgMax 6
+	#define StatusDlgMax 7
 	public:
 		StatusDlg() 
 			{
@@ -56,6 +56,7 @@ class StatusDlg
 				this->Stats[4]="...";
 				this->Stats[5]="...";
 				this->Stats[6]="Init...";
+				this->Stats[7]="...";
 			};
 		~StatusDlg() {DestroyWindow(this->Statuswnd);this->Statuswnd=NULL;};		
 		void Update(unsigned short n,DString Text)
