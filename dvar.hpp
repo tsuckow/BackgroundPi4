@@ -101,6 +101,19 @@ class DString
 };
 
 //
+/* EXTERNAL DSTRING FUNCTIONS */
+//
+DString operator+ (const DString,const DString);
+DString operator+= (DString&,const DString &);
+bool operator== (DString const &,DString const &);
+bool operator== (DString const &,const char *);
+bool operator== (const char *,DString const &);
+DString ftods (const double, const int);
+//
+//
+//
+
+//
 //
 /* BEGIN INTEGER CONVERTION TEMPLATES */
 //
@@ -179,20 +192,6 @@ void DString::uintconstruct(T num)
 //
 //
 /* END INTEGER CONVERTION TEMPLATES */
-//
-//
-
-
-//
-/* EXTERNAL DSTRING FUNCTIONS */
-//
-DString operator+ (const DString,const DString);
-DString operator+= (DString&,const DString &);
-bool operator== (DString const &,DString const &);
-bool operator== (DString const &,const char *);
-bool operator== (const char *,DString const &);
-DString ftods (const double, const int);
-//
 //
 //
 

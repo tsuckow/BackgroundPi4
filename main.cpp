@@ -24,21 +24,27 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 		
 		//Load Update.dll
 		hLib=LoadLibrary("UPDATE.DLL");
+
 		if(hLib==NULL)
 		{
 			MessageBox(NULL,"Failed To Load \"UPDATE.DLL\"","ERROR: BPC.EXE",MB_OK);
 			return 0;
 		}
 		Update=(winUpdate)GetProcAddress((HMODULE)hLib,"Update");
+
 		if(Update==NULL)
 		{
 			FreeLibrary(hLib);
 			MessageBox(NULL,"Failed To Bind \"UPDATE.DLL\"","ERROR: BPC.EXE",MB_OK);
 			return 0;
 		}
+
 		Temp = Update(nFunsterStil,hLib);
 		FreeLibrary(hLib);
 		Update=NULL;
+		
+
+		
 		
 		//Load Loader.dll
 		hLib=LoadLibrary("LOADER.DLL");
@@ -57,6 +63,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 		Temp=Loader(Temp,nFunsterStil,hLib);
 		FreeLibrary(hLib);
 		Loader=NULL;
+			
 		if(Temp)
 		{
 			//If Loader returns TRUE exit, otherwise update.

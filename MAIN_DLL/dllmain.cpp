@@ -6,6 +6,7 @@
  *                       * 
  * * * * * * * * * * * * */
 #include "BPC_MAIN_DLL.h"
+#define STATS_VERSION
 
 bool doExit = true;
 
@@ -15,6 +16,9 @@ HWND Splashwnd = NULL;
 Config Conf;
 
 HANDLE thread = NULL;
+#ifdef STATS_VERSION
+HANDLE statthread = NULL;
+#endif
 HINSTANCE thisinstance = NULL;
 
 TrayIcon * hGlobalIcon = NULL;
@@ -778,8 +782,97 @@ bool DoComm(mpz_t & counter,mpz_t const & sum)
 	return true;
 }
 
+#ifdef STATS_VERSION
+DWORD WINAPI StatsListen(void*)
+{
+    WSADATA wsaData;
+    int iResult = WSAStartup( MAKEWORD(2,2), &wsaData );
+    if( iResult != NO_ERROR )
+    {
+        MessageBox(NULL,"Failed to initiate \"Windows Sockets 2\".","Winsock Error",MB_OK | MB_ICONERROR | MB_APPLMODAL);
+        return 0;
+    }
+     
+    // Create a socket.
+    SOCKET m_socket;
+    m_socket = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
+
+    if ( m_socket == INVALID_SOCKET )
+    {
+        WSACleanup();
+        MessageBox(NULL,"Failed to initiate socket.","Winsock Error",MB_OK | MB_ICONERROR | MB_APPLMODAL);
+        return 0;
+    }
+    
+    // Bind the socket.
+    sockaddr_in service;
+
+    service.sin_family = AF_INET;
+    service.sin_addr.s_addr = inet_addr( "0.0.0.0" );
+    service.sin_port = htons( 31416 );
+    
+     if ( bind( m_socket, (SOCKADDR*) &service, sizeof(service) ) == SOCKET_ERROR )
+     {
+          WSACleanup();
+         //printf( "bind() failed.\n" );
+         closesocket(m_socket);
+         MessageBox(NULL,"Failed to bind socket.\nPort may already be in use.","Winsock Error",MB_OK | MB_ICONERROR);
+         
+         
+         ///
+         //SHUTDOWN PROGRAM!
+         ///
+         return 0;
+    }
+    
+   
+    
+    // Listen on the socket.
+    if ( listen( m_socket, 10 ) == SOCKET_ERROR )
+    {
+         WSACleanup();
+         //printf( "Error listening on socket.\n");
+         MessageBox(NULL,"Failed to listen on socket.","Winsock Error",MB_OK | MB_ICONERROR | MB_APPLMODAL);
+              
+         ///
+         //SHUTDOWN PROGRAM!
+         ///
+         return 0;
+    }
+    
+    SOCKET AcceptSocket;
+    sockaddr_in clientaddr;
+    
+    while (1)
+    {          
+        AcceptSocket = (unsigned int)SOCKET_ERROR;
+        while ( AcceptSocket == SOCKET_ERROR )
+        {
+            int size = sizeof(clientaddr);
+            AcceptSocket = accept( m_socket,(struct sockaddr*)&clientaddr,&size);            
+        }
+          
+        // Send and receive data
+        int bytesSent;
+        DString buffer;
+
+        for(int i = 0;i<=8;i++)
+        {
+            buffer += Stat.Stats[i] + "\r\n";
+        }
+        
+        bytesSent = send( AcceptSocket, buffer, strlen(buffer), 0 );//System Ready
+        closesocket(AcceptSocket);
+
+    }
+}
+#endif
+
 DWORD WINAPI MainThread(void*)
 {
+	#ifdef STATS_VERSION
+		statthread = CreateThread(NULL,0,StatsListen,NULL,0,NULL);
+    #endif
 	Sleep(50);
 	PostMessage(Splashwnd,WM_SETLOADTEXT,0,(LPARAM)"Loading Settings...");
 	Stat.Update(6,"Loading Settings...");
@@ -815,6 +908,8 @@ DWORD WINAPI MainThread(void*)
         	hFile.close();
     	}
 	}
+	
+	ShowWindow (Splashwnd, SW_HIDE);
     
     while(true)
     {
@@ -914,6 +1009,8 @@ bool APIENTRY Main(int nFunsterStil,HINSTANCE instance)
 		ShowWindow (Splashwnd, SW_SHOW);
     }
 	
+	thread = CreateThread(NULL,0,MainThread,NULL,0,NULL); //Returns handle to thread, may be useful...
+	
 	MSG messages;
 	// Run the message loop. It will run until GetMessage() returns 0 
     while (GetMessage (&messages, NULL, 0, 0) > 0)
@@ -932,5 +1029,8 @@ bool APIENTRY Main(int nFunsterStil,HINSTANCE instance)
     Splashwnd=NULL;
     Sleep(50);
     CloseHandle(thread);
+    #ifdef STATS_VERSION
+    	CloseHandle(statthread);
+    #endif
 	return doExit;
 }

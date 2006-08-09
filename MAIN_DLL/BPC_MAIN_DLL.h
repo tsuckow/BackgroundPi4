@@ -25,7 +25,7 @@
 #define ID_MENU_EXIT    (WM_USER+0)
 #define ID_MENU_STATUS  (WM_USER+1)
 
-#define SUM_PREC 50
+#define SUM_PREC 60
 
 extern bool doExit;
 extern HWND Inviswnd;
@@ -58,7 +58,7 @@ class StatusDlg
 				this->Stats[5]="...";
 				this->Stats[6]="Init...";
 				this->Stats[7]="...";
-				this->Stats[7]="...";
+				this->Stats[8]="...";
 			};
 		~StatusDlg() {DestroyWindow(this->Statuswnd);this->Statuswnd=NULL;};		
 		void Update(unsigned short n,DString Text)
@@ -86,7 +86,6 @@ class StatusDlg
                 SetForegroundWindow(this->Statuswnd);
 			};
 		HWND Statuswnd;
-	private:
 		DString Stats[StatusDlgMax+1];
 };
 

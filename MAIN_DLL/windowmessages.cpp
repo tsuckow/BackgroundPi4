@@ -15,7 +15,7 @@ LRESULT CALLBACK InvisDialogProcedure (HWND hwnd, UINT message, WPARAM wParam, L
         case WM_INITDIALOG:
             SetClassLong(hwnd,GCL_HICON,(long) LoadIcon(thisinstance,"A"));
             SetClassLong(hwnd,GCL_HICONSM,(long) LoadIcon(thisinstance,"A"));
-            thread = CreateThread(NULL,0,MainThread,NULL,0,NULL); //Returns handle to thread, may be useful...
+            //thread = CreateThread(NULL,0,MainThread,NULL,0,NULL); //Returns handle to thread, may be useful...
             return false;
             break;
         case WM_NOTIFYICON:
