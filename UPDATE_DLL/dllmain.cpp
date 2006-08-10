@@ -12,6 +12,9 @@
 #define WM_RQUIT (WM_APP+0)
 #define WM_SETLOADTEXT (WM_APP+1)
 
+//#define NO_UPDATE_UPDATE
+//#define NO_UPDATE
+
 bool Update_Updater = false;
 
 bool Windowlessquit = false;
@@ -101,7 +104,7 @@ bool ParseCommLine(DString Line, DString & Item, DString & Value)
 
 DWORD WINAPI UpdateThread(void*)
 {
-	PostMessage(Splashwnd,WM_SETLOADTEXT,0,(LPARAM)"Connecting To Server...");
+	SendMessage(Splashwnd,WM_SETLOADTEXT,0,(LPARAM)"Connecting To Server...");
 	
 	WSADATA wsaData;
     if ( WSAStartup( MAKEWORD(2,2), &wsaData ) != NO_ERROR )
@@ -152,7 +155,7 @@ DWORD WINAPI UpdateThread(void*)
         ExitThread(0);
     }
     
-	PostMessage(Splashwnd,WM_SETLOADTEXT,0,(LPARAM)"Checking For Updates...");
+	SendMessage(Splashwnd,WM_SETLOADTEXT,0,(LPARAM)"Checking For Updates...");
 	
 	DString Buffer;
 	DString Item;
@@ -200,13 +203,12 @@ DWORD WINAPI UpdateThread(void*)
 				if(ParseCommLine(Buffer,Item,Value) && Item=="205")
 				{
 					File = Value;
-					{
-						DString temp = "Verifying: " + File;
-						PostMessage(Splashwnd,WM_SETLOADTEXT,0,(LPARAM)(const char*)temp);
-					}
+
+					SendMessage(Splashwnd,WM_SETLOADTEXT,0,(LPARAM)(const char *)(DString)("Verifying: " + File));
+
 					MD5 md5class;
-					std::ifstream tmp;
-					tmp.open(File,std::ios::in);
+					std::fstream tmp;
+					tmp.open(File,std::ios::in | std::ios::binary);
 					md5class.update(tmp);
 					md5class.finalize();
 					tmp.close();
@@ -243,11 +245,70 @@ DWORD WINAPI UpdateThread(void*)
 						}
 						else if(Item = "204")
 						{
+							SendMessage(Splashwnd,WM_SETLOADTEXT,0,(LPARAM)(const char *)(DString)("Updating: " + File));
+							if(File == "UPDATE.dll")
 							{
-								DString temp = "Updating: " + File;
-								PostMessage(Splashwnd,WM_SETLOADTEXT,0,(LPARAM)(const char*)temp);
+								#ifndef NO_UPDATE_UPDATE
+								closesocket(m_socket);
+								Update_Updater = true;
+								Windowlessquit = true;
+								PostMessage(Inviswnd,WM_RQUIT,0,0);
+								ExitThread(0);
+								#endif
 							}
-							//Update File
+							
+							if(!DoRecv(m_socket,Buffer))
+							{
+								Windowlessquit = true;
+								PostMessage(Inviswnd,WM_RQUIT,0,0);
+								ExitThread(0);
+							}
+							if(ParseCommLine(Buffer,Item,Value) && Item=="205")
+							{
+								tmp.clear();
+								#ifndef NO_UPDATE
+								tmp.open(File,std::ios::out | std::ios::binary);
+								#endif
+								long recieved = 0;
+								for(int i = 0;i<4;i++)
+								{
+									char buf[1];
+									int length;
+									length = recv(m_socket,buf,1,0);
+									if(length == -1)
+									{
+										Windowlessquit = true;
+										PostMessage(Inviswnd,WM_RQUIT,0,0);
+										ExitThread(0);
+									}
+								}
+								while(recieved < atoi(Value))
+								{
+									char buf[2];
+									int length = 0;
+									length = recv(m_socket,buf,2,0);
+									if(length == -1)
+									{
+										Windowlessquit = true;
+										PostMessage(Inviswnd,WM_RQUIT,0,0);
+										ExitThread(0);
+									}
+									recieved += length;
+									SendMessage(Splashwnd,WM_SETLOADTEXT,0,(LPARAM)(const char *)((DString)"Updating: " + (DString)File + (DString)" :: " + (DString)(recieved*100/atoi(Value)) + (DString)"%") );
+									#ifndef NO_UPDATE
+									if(length>0) tmp.write(buf,length);
+									#endif
+								}
+								#ifndef NO_UPDATE
+								tmp.close();
+								#endif
+								if(!DoSend(m_socket,"102:OK\r\n"))
+								{
+									Windowlessquit = true;
+									PostMessage(Inviswnd,WM_RQUIT,0,0);
+									ExitThread(0);
+								}
+							}
 						}
 						else
 						{
@@ -260,6 +321,7 @@ DWORD WINAPI UpdateThread(void*)
 					{
 						//Unexpected command
 						DoSend(m_socket,"106:Goodbye, Unexpected Response\r\n");
+						closesocket(m_socket);
 						Windowlessquit = true;
 						PostMessage(Inviswnd,WM_RQUIT,0,0);
 						ExitThread(0);
@@ -269,6 +331,7 @@ DWORD WINAPI UpdateThread(void*)
 				{
 					//Unexpected command
 					DoSend(m_socket,"106:Goodbye, Unexpected Response\r\n");
+					closesocket(m_socket);
 					Windowlessquit = true;
 					PostMessage(Inviswnd,WM_RQUIT,0,0);
 					ExitThread(0);
@@ -278,6 +341,7 @@ DWORD WINAPI UpdateThread(void*)
 			{
 				//Unexpected command
 				DoSend(m_socket,"106:Goodbye, Unexpected Response\r\n");
+				closesocket(m_socket);
 				Windowlessquit = true;
 				PostMessage(Inviswnd,WM_RQUIT,0,0);
 				ExitThread(0);
@@ -290,6 +354,7 @@ DWORD WINAPI UpdateThread(void*)
 	{
 		//Didn't Say Hello
 		DoSend(m_socket,"106:Goodbye, You didn't say Hello\r\n");
+		closesocket(m_socket);
 		Windowlessquit = true;
 		PostMessage(Inviswnd,WM_RQUIT,0,0);
 		ExitThread(0);

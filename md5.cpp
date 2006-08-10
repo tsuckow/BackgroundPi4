@@ -46,7 +46,8 @@ documentation and/or software.
 
 
 #include "md5.hpp"
-
+#include "dvar.hpp"
+#include <windows.h>
 #include <strings.h>
 
 
@@ -126,13 +127,13 @@ void MD5::update(FILE *file){
 
 void MD5::update(std::istream& stream){
 
-  unsigned char buffer[1024];
+  char buffer[1024];
   int len;
 
   while (stream.good()){
     stream.read((char*)buffer, 1024); // note that return value of read is unusable.
     len=stream.gcount();
-    update(buffer, len);
+    update((unsigned char*)buffer, len);
   }
 
 }
@@ -147,15 +148,14 @@ void MD5::update(std::istream& stream){
 
 void MD5::update(std::ifstream& stream){
 
-  unsigned char buffer[1024];
+  char buffer[1024];
   int len;
 
   while (stream.good()){
     stream.read((char*)buffer, 1024); // note that return value of read is unusable.
     len=stream.gcount();
-    update(buffer, len);
+    update((unsigned char*)buffer, len);
   }
-
 }
 
 
