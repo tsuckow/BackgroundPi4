@@ -262,7 +262,7 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
   Stat.Update(6,"Loading Vars...");
     
   mpz_init(N);
-  mpz_add_ui(N,n,20);
+  mpz_add_ui(N,n,30);//Increase this number should increase precision
   mpf_set_d(tempf,log(10)/log(13.5));
   mpf_set_z(tempf2,N);
   mpf_mul(tempf,tempf,tempf2);

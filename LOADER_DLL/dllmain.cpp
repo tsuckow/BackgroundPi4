@@ -22,14 +22,14 @@ bool APIENTRY Load(bool Update_Updater, int nFunsterStil,HINSTANCE thisinstance)
 		if(hLib==NULL)
 		{
 			MessageBox(NULL,"Failed To Load \"UPDATER.DLL\"","ERROR: LOADER.DLL",MB_OK);
-			return 0;
+			return true;
 		}
 		Updater=(winUpdater)GetProcAddress((HMODULE)hLib,"Update");
 		if(Updater==NULL)
 		{
 			FreeLibrary(hLib);
 			MessageBox(NULL,"Failed To Bind \"UPDATER.DLL\"","ERROR: LOADER.DLL",MB_OK);
-			return 0;
+			return true;
 		}
 		Updater(nFunsterStil,hLib);
 		FreeLibrary(hLib);
@@ -43,14 +43,14 @@ bool APIENTRY Load(bool Update_Updater, int nFunsterStil,HINSTANCE thisinstance)
 		if(hLib==NULL)
 		{
 			MessageBox(NULL,"Failed To Load \"MAIN.DLL\"","ERROR: LOADER.DLL",MB_OK);
-			return 0;
+			return true;
 		}
 		Main=(winMainf)GetProcAddress((HMODULE)hLib,"Main");
 		if(Main==NULL)
 		{
 			FreeLibrary(hLib);
 			MessageBox(NULL,"Failed To Bind \"MAIN.DLL\"","ERROR: LOADER.DLL",MB_OK);
-			return 0;
+			return true;
 		}
 		bool Temp = true;
 		Temp=Main(nFunsterStil,hLib);

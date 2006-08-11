@@ -254,7 +254,7 @@ DWORD WINAPI UpdateThread(void*)
 								#ifndef NO_UPDATE
 								tmp.open(File,std::ios::out | std::ios::binary);
 								#endif
-								long recieved = 0;
+								int recieved = 0;
 								for(int i = 0;i<4;i++)
 								{
 									char buf[1];
@@ -267,11 +267,12 @@ DWORD WINAPI UpdateThread(void*)
 										ExitThread(0);
 									}
 								}
+								long perc = -1;
 								while(recieved < atoi(Value))
 								{
-									char buf[2];
+									char buf[100];
 									int length = 0;
-									length = recv(m_socket,buf,2,0);
+									length = recv(m_socket,buf,100,0);
 									if(length == -1)
 									{
 										Windowlessquit = true;
@@ -279,7 +280,11 @@ DWORD WINAPI UpdateThread(void*)
 										ExitThread(0);
 									}
 									recieved += length;
-									SendMessage(Splashwnd,WM_SETLOADTEXT,0,(LPARAM)(const char *)((DString)"Updating: " + (DString)File + (DString)" :: " + (DString)(recieved*100/atoi(Value)) + (DString)"%") );
+									if( (recieved*100/atoi(Value)) != perc )
+									{
+										perc = (recieved*100/atoi(Value));
+										SendMessage(Splashwnd,WM_SETLOADTEXT,0,(LPARAM)(const char *)((DString)"Updating: " + (DString)File + (DString)" :: " + (DString)perc + (DString)"%") );
+									}
 									#ifndef NO_UPDATE
 									if(length>0) tmp.write(buf,length);
 									#endif

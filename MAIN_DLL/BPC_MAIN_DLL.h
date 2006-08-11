@@ -25,7 +25,7 @@
 #define ID_MENU_EXIT    (WM_USER+0)
 #define ID_MENU_STATUS  (WM_USER+1)
 
-#define SUM_PREC 60
+#define SUM_PREC 50
 
 extern bool doExit;
 extern HWND Inviswnd;
