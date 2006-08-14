@@ -1,0 +1,15 @@
+:Base help.hlp
+:Title Background Pi Help
+:Index dummy=dummy.hlp ;(This is necessary when using KLinks - because of a bug in the help
+:Link dummy.hlp        ; compiler. Without this only the first keyword would be looked up!)
+1 About Background Pi=SHM_contents0001@help.hlp
+1 Features
+2 Icons=SHM_contents0002@help.hlp
+2 Change Log=SHM_contents0003@help.hlp
+2 Future Changes=SHM_contents0004@help.hlp
+2 Status Dialog=SHM_contents0005@help.hlp
+2 Configuration Dialog=SHM_contents0006@help.hlp
+1 Help
+2 FAQ=SHM_contents0007@help.hlp
+2 Energy Saving Settings=SHM_contents0008@help.hlp
+2 Contacts=SHM_contents0009@help.hlp

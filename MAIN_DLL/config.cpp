@@ -9,12 +9,22 @@
  
 Config::Config()
 {
+	//      DCName		This is Dynamic
+	#define DCHost		"defcon1.hopto.org"
+	#define DCPort		3141
+	#define DCTimeout	30
+	#define DCResume	10
+	#define DCDelay		0
+	#define DCStats		false
+	
 	//Defaults
-	this->Port = 31415;
-	this->Resume = 10;
-	this->Timeout = 30;
-	this->Delay = 0;
-	this->Host = "defcon1.hopto.org";
+	this->Name = (DString)"Guest" + (DString)time(NULL) + (DString)rand();
+	this->Host = DCHost;
+	this->Port = DCPort;
+	this->Timeout = DCTimeout;
+	this->Resume = DCResume;	
+	this->Delay = DCDelay;
+	this->Stats = DCStats;
 }
 
 bool ParseLine(DString Line, DString & Item, DString & Value)
@@ -55,6 +65,7 @@ bool Config::Open() //return false on fail
 				else if(Item=="Port")
 				{
 					this->Port=atoi(Value);
+					if(this->Port == 31415) this->Port = 3141;
 				}
 				else if(Item=="Resume")
 				{
@@ -67,6 +78,14 @@ bool Config::Open() //return false on fail
 				else if(Item=="Delay")
 				{
 					this->Delay=atoi(Value);
+				}
+				else if(Item=="Stats")
+				{
+					this->Stats=(bool)atoi(Value);
+				}
+				else if(Item=="Name" && Value!="")
+				{
+					this->Name=Value;
 				}
 				//End Config If's
 			}
@@ -88,11 +107,14 @@ bool Config::Save()
 	hFile.open("Config.cfg",std::ios::out);
 	if(hFile.is_open())
 	{
-		hFile << "Host=" << this->Host << std::endl;
-		hFile << "Port=" << this->Port << std::endl;
-		hFile << "Resume=" << this->Resume << std::endl;
-		hFile << "Timeout=" << this->Timeout << std::endl;
-		hFile << "Delay=" << this->Delay << std::endl;
+		hFile << "#This file is over-writen by BackPi.\n\n";
+		hFile << "Name=" << this->Name << std::endl;
+		if( this->Host != DCHost )			hFile << "Host=" << this->Host << std::endl;
+		if( this->Port != DCPort )			hFile << "Port=" << this->Port << std::endl;
+		if( this->Timeout != DCTimeout )	hFile << "Timeout=" << this->Timeout << std::endl;
+		if( this->Resume != DCResume )		hFile << "Resume=" << this->Resume << std::endl;		
+		if( this->Delay != DCDelay )		hFile << "Delay=" << this->Delay << std::endl;
+		if( this->Stats != DCStats )		hFile << "Stats=" << this->Stats << std::endl;
 		return true;
 	}
 	else

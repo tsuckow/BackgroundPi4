@@ -6,23 +6,27 @@
  *                       * 
  * * * * * * * * * * * * */
 #include "BPC_MAIN_DLL.h"
-#define STATS_VERSION
 
 bool doExit = true;
+
+Config Conf;
 
 HWND Inviswnd = NULL;
 StatusDlg Stat;
 HWND Splashwnd = NULL;
-Config Conf;
-
+SettingDlg Sett;
 HANDLE thread = NULL;
-#ifdef STATS_VERSION
+
 HANDLE statthread = NULL;
-#endif
+
 HINSTANCE thisinstance = NULL;
 
 TrayIcon * hGlobalIcon = NULL;
 
+bool Windowlessquit = false;
+
+typedef bool (WINAPI * winVerifyf)(HINSTANCE);
+winVerifyf UP2DATEVerify;
 
 //Tray Icon
 TrayIcon::TrayIcon(HINSTANCE instance)
@@ -307,8 +311,9 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
 			resume << "";
 			resume.close();
 			MessageBox(NULL,"Background Pi CLIENT Was Unable To Open Resume.cfg.\n\nBackground Pi Will Try Again.","ERROR: Main.DLL",MB_OK);
-            PostMessage(Inviswnd,WM_RQUIT,0,0);
-            ExitThread(0);
+            Windowlessquit = true;
+			PostMessage(Inviswnd,WM_RQUIT,0,0);
+        	ExitThread(0);
 		}       
 	}
   percentc(ps,a,N3);
@@ -478,6 +483,10 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
       time(&time_resume);
     }    
     //END RESUME SAVE
+    
+    //Give the proccessor a break!
+    Sleep(Conf.Delay);
+    
   }// End Master For Loop
 	  
   //mpz_t av,a,vmax,N,N3,num,den,k,kq1,kq2,kq3,kq4,t,v,s,i,t1,temp,temp2;
@@ -507,42 +516,144 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
   mpf_clear(tempf2);
 }
 
+bool DoRecv(SOCKET & handle, DString & Buffer)
+{
+	Buffer="";
+	char buf[2];
+	buf[1]=0;
+	ssize_t length;
+	bool gotRet = false;
+	
+	length = recv(handle,buf,1,0);
+	while( length > 0 )
+	{
+		//std::cout << buf[0] << ":" << (int)buf[0] << " ";
+		if(gotRet && buf[0]=='\n')
+		{
+			return true;
+		}
+		else
+		{
+			if(gotRet)
+			{
+				Buffer+=(char)'\r';
+			}
+			if(buf[0]=='\r')
+			{
+				gotRet=true;
+			}
+			else
+			{
+				gotRet=false;
+				if(buf[0]==8)
+				{
+					while(!Buffer.Isend())
+					{
+						Buffer.Nextchar();
+					}
+					Buffer = Buffer.Getsbc();
+				}
+				else
+				{
+					Buffer+=buf[0];
+				}
+			}
+		}
+		length = recv(handle,buf,1,0);
+	}
+	return false;
+}
+
+bool DoSend(SOCKET & Handle,DString const & Msg)
+{
+	if(send(Handle, Msg, strlen(Msg), 0) == -1)
+	{
+		return false;
+	}
+	return true;
+}
+
+bool ParseCommLine(DString Line, DString & Item, DString & Value)
+{
+     while(Line.Getchar() != ':' && !Line.Isend())
+     {
+                Line.Nextchar();   
+     }
+     if(Line.Getchar() != ':')
+     {
+            return false;
+     }
+     Item=Line.Getsbc();
+     Value=Line.Getspc();
+     
+     return true;
+}
+
 bool DoComm(mpz_t & counter,mpz_t const & sum)
 {
-	// SET VAR
-    int test = 1;
-    time_t timeout_start;
-    mpf_t tempf;
-    mpz_t temp;
-    mpz_init(temp);
-    mpf_init(tempf);
-    
-    // Initialize Winsock.
-    WSADATA wsaData;
-    int iResult = WSAStartup( MAKEWORD(2,2), &wsaData );
-    if ( iResult != NO_ERROR )
-    {
-        //printf("Error at WSAStartup()\n");
-        MessageBox(NULL,"Background Pi CLIENT Encountered An Error Loading Windows Sockets.\nTry Restarting Your Computer.\nBackground Pi Will Now Terminate.","Winsock",MB_OK);
-        PostMessage(Inviswnd,WM_RQUIT,0,0);
+	//Make Sure We Are UP2DATE
+	
+	Stat.Reset();
+	Stat.Update(6,"UP2DATE?");
+	
+	HINSTANCE hLib=NULL;
+    hLib=LoadLibrary("UPDATE.DLL");
+	if(hLib==NULL)
+	{
+		MessageBox(NULL,"Failed To Load \"UPDATE.DLL\"","ERROR: MAIN.DLL",MB_OK);
+		doExit = false;
+		Windowlessquit = true;
+		PostMessage(Inviswnd,WM_RQUIT,0,0);
         ExitThread(0);
-        return true;
-    }    
-
-    // Create a socket.
+	}
+	UP2DATEVerify=(winVerifyf)GetProcAddress((HMODULE)hLib,"Verify");
+	if(UP2DATEVerify==NULL)
+	{
+		FreeLibrary(hLib);
+		MessageBox(NULL,"Failed To Bind \"UPDATE.DLL\"","ERROR: MAIN.DLL",MB_OK);
+		doExit = false;
+		Windowlessquit = true;
+		PostMessage(Inviswnd,WM_RQUIT,0,0);
+        ExitThread(0);
+	}
+	bool Temp = UP2DATEVerify(hLib);
+	FreeLibrary(hLib);
+	UP2DATEVerify=NULL;
+	
+	if(Temp)
+	{
+		//Must Update
+		doExit = false;
+		Windowlessquit = true;
+		PostMessage(Inviswnd,WM_RQUIT,0,0);
+        ExitThread(0);
+	}
+	
+	//END UP2DATE Check
+	
+	Stat.Update(6,"Finding next range");
+	
+	WSADATA wsaData;
+    if ( WSAStartup( MAKEWORD(2,2), &wsaData ) != NO_ERROR )
+    {
+        MessageBox(NULL,"Background Pi CLIENT Encountered An Error Loading Windows Sockets.\nTry Restarting Your Computer.","Winsock",MB_OK);
+		Windowlessquit = true;
+		PostMessage(Inviswnd,WM_RQUIT,0,0);
+        ExitThread(0);
+    }
+    
     SOCKET m_socket;
     m_socket = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
 
     if ( m_socket == INVALID_SOCKET )
     {
-        MessageBox(NULL,"Background Pi CLIENT Encountered An Error Loading The Socket.\nTry Restarting Your Computer.\nBackground Pi Will Now Terminate.\n\nCODE: " + (DString)WSAGetLastError(),"Winsock",MB_OK);
-        PostMessage(Inviswnd,WM_RQUIT,0,0);
-        WSACleanup();
+		WSACleanup();
+        MessageBox(NULL,"Background Pi CLIENT Encountered An Error Loading The Socket.\nTry Restarting Your Computer.\n\nCODE: " + (DString)WSAGetLastError(),"Winsock",MB_OK);
+		Windowlessquit = true;
+		PostMessage(Inviswnd,WM_RQUIT,0,0);
         ExitThread(0);
-        return true;
     }
-
-    // Connect to a server.
+    
     sockaddr_in clientService;
     memset(&clientService,'\0',sizeof(clientService)); 
     clientService.sin_family = AF_INET;
@@ -556,17 +667,13 @@ bool DoComm(mpz_t & counter,mpz_t const & sum)
     {
         clientService.sin_addr.s_addr = inet_addr(Conf.Host);// 32-bit network address
     }
-       
-    //clientService.sin_addr.s_addr = inet_addr(urladdr);
-    clientService.sin_port = htons( 31415 );
-
+    
+    clientService.sin_port = htons( Conf.Port );//Port
+    
     if ( connect( m_socket, (SOCKADDR*) &clientService, sizeof(clientService) ) == SOCKET_ERROR)
     {
-         WSACleanup();
-        //UpdateMode(MD_ERROR, true);
-        //PRGMODE *= MD_ERROR;
-        
-        //Experamental Custom Sleep Logic
+		WSACleanup();
+         
         time_t sleep_start;
         time(&sleep_start);
         while(((int)time(NULL)-sleep_start) < (Conf.Timeout))
@@ -575,214 +682,167 @@ bool DoComm(mpz_t & counter,mpz_t const & sum)
             
             Stat.Update(6,"Will Retry Soon...");
             Stat.Update(5,ftods((((float)time(NULL)-(float)sleep_start)/(float)Conf.Timeout*100),2) + "%");
-            //char counterstr[255];
-            //mpz_get_str(counterstr,10,counter);
-            //status[8] = counterstr;
+            Stat.Update(3,Conf.Timeout-((int)time(NULL)-sleep_start));
+            Stat.Update(4,(int)time(NULL)-sleep_start);
+            Stat.Update(7,Conf.Timeout);
             Sleep(500);
         }    
-        
-        //UpdateMode(MD_ERROR, false);
-        //PRGMODE /= MD_ERROR;    
+		
+		return true; //Need to try again
     }
-    else
-    {
-
-        //bpcstatus.SetVal("Communicating...",0);
-        Stat.Update(6,"Communicating...");
-        //char counterstr[255];
-        //mpz_get_str(counterstr,10,counter);
-        //status[8] = counterstr;
-        
-        // Send and receive data.
-        int bytesSent;
-        int bytesRecv = SOCKET_ERROR;
-        char recvbuf[32] = "";
-
-		DString buffer;
-        buffer = PI_COM_VERSION;
-        bytesSent = send( m_socket, buffer, strlen(buffer), 0 );//IGNORED
-        strcpy(recvbuf,"");
-        bytesRecv = recv( m_socket, recvbuf, 32, 0 );
-        if(bytesRecv != SOCKET_ERROR)
-        {
-            if(strcmp(recvbuf,"003") == 0)
-            {
-                memset(recvbuf,'\0',strlen(recvbuf));
-                bytesRecv = recv( m_socket, recvbuf, 32, 0 );
-                if(bytesRecv != SOCKET_ERROR)
-                {
-                     bytesSent = send( m_socket, "003", strlen("003"), 0 );//Abnormal
-                     closesocket(m_socket);
-                     buffer = (DString)"Your Background Pi Communications Version Differs From Servers\nNote: This is not the Background Pi Version\n\nYour Version: " + (DString)PI_COM_VERSION + (DString)"\nServer Version: " + recvbuf;
-                     MessageBox(NULL,buffer,"Version Conflict",MB_OK); 
-                     PostMessage(Inviswnd,WM_RQUIT,0,0);
-                     ExitThread(0);
-                }
-            }
-            else if (strcmp(recvbuf,"001") == 0)
-            {
-                //TrayMessage(hGlobalwnd, NIM_MODIFY, hGlobalInstance, "Sending 9 Digits...");
-                //Extract the 9 digits from a really long int!
-                char counterstr[255];
-                mpz_get_str(counterstr,10,sum);
-                DString DTemp;
-                DTemp = counterstr;
-                while(!DTemp.Isend())
-                {
-                    DTemp.Nextchar();
-                }
-                for(unsigned int i = 0; i < (SUM_PREC - 10);i++)
-                {
-                    DTemp.Prevchar();
-                }
-                DTemp = DTemp.Getsbc();
-                while(!DTemp.Isend())
-                {
-                    DTemp.Nextchar();
-                }
-                for(unsigned int i = 0; i < 9;i++)
-                {
-                    DTemp.Prevchar();
-                }
-                DTemp = DTemp.Getspc();
-                //Got the Digits
-                bytesSent = send( m_socket, DTemp, strlen(DTemp), 0 );//9 #
-                memset(recvbuf,'\0',strlen(recvbuf));
-                bytesRecv = recv( m_socket, recvbuf, 32, 0 );
-                if(bytesRecv != SOCKET_ERROR)
-                {
-                    if(strcmp(recvbuf,"003") == 0)
-                    {
-                        //Exit Abnormal
-                        bytesSent = send( m_socket, "003", strlen("003"), 0 );//Abnormal
-                        closesocket(m_socket);
-                        //End Abnormal Exit Sequence
-                    } 
-                    else if (strcmp(recvbuf,"001") == 0)
-                    {
-                        //TrayMessage(hGlobalwnd, NIM_MODIFY, hGlobalInstance, "Sending Pi Range...");
-                        //sprintf(buffer,"%li",counter);
-                        char counterstr[255];
-                        mpz_get_str(counterstr,10,counter);
-                        buffer = counterstr;
-                        bytesSent = send( m_socket, buffer, strlen(buffer), 0 );//I
-                        memset(recvbuf,'\0',strlen(recvbuf));
-                        bytesRecv = recv( m_socket, recvbuf, 32, 0 );
-                        if(bytesRecv != SOCKET_ERROR)
-                        {
-                            if(strcmp(recvbuf,"003") == 0)
-                            {
-                                //Exit Abnormal
-                                bytesSent = send( m_socket, "003", strlen("003"), 0 );//Abnormal
-                                closesocket(m_socket);
-                                //End Abnormal Exit Sequence
-                            }
-                            else if (strcmp(recvbuf,"001") == 0)
-                            {
-                                bytesSent = send( m_socket, "001", strlen("001"), 0 );//Abnormal
-                                memset(recvbuf,'\0',strlen(recvbuf));
-                                bytesRecv = recv( m_socket, recvbuf, 32, 0 );
-                                if(bytesRecv != SOCKET_ERROR)
-                                {
-                                    if(strcmp(recvbuf,"003") == 0)
-                                    {
-                                        //Exit Abnormal
-                                        bytesSent = send( m_socket, "003", strlen("003"), 0 );//Abnormal
-                                        closesocket(m_socket);
-                                        //End Abnormal Exit Sequence
-                                    }
-                                    //TrayMessage(hGlobalwnd, NIM_MODIFY, hGlobalInstance, "Getting Next Pi Range...");
-                                    buffer = recvbuf;
-                                    //MessageBox(hhwnd,buffer,"Comm",MB_OK);
-                                    bytesSent = send( m_socket, "001", strlen("001"),0 );//System Ready
-                                    memset(recvbuf,'\0',strlen(recvbuf));
-                                    bytesRecv = recv( m_socket, recvbuf, 32, 0 );
-                                    if(bytesRecv != SOCKET_ERROR)
-                                    {
-                                        //MessageBox(hhwnd,recvbuf,"Comm",MB_OK);
-                                        if(strcmp(recvbuf,"003") == 0)
-                                        {
-                                            //Exit Abnormal
-                                            bytesSent = send( m_socket, "003", strlen("003"), 0 );//Abnormal
-                                            closesocket(m_socket);
-                                            //End Abnormal Exit Sequence
-                                        }
-                                        else if(strcmp(recvbuf,"002") == 0)
-                                        {
-                                            //TrayMessage(hGlobalwnd, NIM_MODIFY, hGlobalInstance, "Setting Pi Range & Disconnecting...");
-                                            mpz_set_str(counter,(const char *)buffer,10);
-                                            closesocket(m_socket);
-                                            mpf_clear(tempf);
-    										mpz_clear(temp);
-    										return false;
-                                            
-                                        }
-                                        else
-                                        {
-                                            bytesSent = send( m_socket, "003", strlen("003"), 0 );//Abnormal
-                                            closesocket(m_socket);  
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    closesocket(m_socket);
-                                    mpf_clear(tempf);
-    								mpz_clear(temp);
-    								//return false;
-                                }
-                            }
-                            else
-                            {
-                                bytesSent = send( m_socket, "003", strlen("003"), 0 );//Abnormal
-                                closesocket(m_socket);  
-                            }
-                        }
-                        else
-                        {
-                            closesocket(m_socket);
-                            mpf_clear(tempf);
-    						mpz_clear(temp);
-    						//return false;
-                        }           
-                    }
-                    else
-                    {
-                        bytesSent = send( m_socket, "003", strlen("003"), 0 );//Abnormal
-                        closesocket(m_socket);
-                    }
-                }
-                else
-                {
-                    closesocket(m_socket);
-                    mpf_clear(tempf);
-    				mpz_clear(temp);
-    				//return false;
-                }
-            }
-            else
-            {
-                bytesSent = send( m_socket, "003", strlen("003"), 0 );//Abnormal
-                closesocket(m_socket);
-            }
-        }
-        else
-        {
-            closesocket(m_socket);
-            mpf_clear(tempf);
-    		mpz_clear(temp);
-    		//return false;
-        }
-    }  
-    closesocket(m_socket);    
-    mpf_clear(tempf);
-    mpz_clear(temp);
     
-    //Status Update
-	return true;
+    DString Buffer;
+	DString Item;
+	DString Value;
+	
+	if(!DoSend(m_socket,"101:Hello\r\n"))
+	{
+		closesocket(m_socket);
+    	return true;
+	}
+	if(!DoRecv(m_socket,Buffer))
+	{
+		closesocket(m_socket);
+    	return true;
+	}
+	
+	if(ParseCommLine(Buffer,Item,Value) && Item=="201")
+	{
+		if(!DoSend(m_socket,"152:Data\r\n"))
+		{
+			closesocket(m_socket);
+    		return true;
+		}
+		if(!DoRecv(m_socket,Buffer))
+		{
+			closesocket(m_socket);
+    		return true;
+		}
+		
+		if(ParseCommLine(Buffer,Item,Value) && Item=="254")
+		{
+			if(!DoSend(m_socket,"105:" + Conf.Name + "\r\n"))
+			{
+				closesocket(m_socket);
+    			return true;
+			}
+			if(!DoRecv(m_socket,Buffer))
+			{
+				closesocket(m_socket);
+    			return true;
+			}
+		
+			if(ParseCommLine(Buffer,Item,Value) && Item=="251")
+			{
+				{
+					char counterstr[255];
+                	mpz_get_str(counterstr,10,counter);
+					if(!DoSend(m_socket,"105:" + (DString)counterstr + "\r\n"))
+					{
+						closesocket(m_socket);
+    					return true;
+					}
+				}
+				if(!DoRecv(m_socket,Buffer))
+				{
+					closesocket(m_socket);
+    				return true;
+				}
+		
+				if(ParseCommLine(Buffer,Item,Value) && Item=="252")
+				{
+					//Extract the 9 digits from a really long int!
+					{
+                		char sumstr[255];
+                		mpz_get_str(sumstr,10,sum);
+                		Buffer = sumstr;
+					}    
+					while(!Buffer.Isend())
+                	{
+                    	Buffer.Nextchar();
+                	}
+                	for(unsigned int i = 0; i < (SUM_PREC - 10);i++)
+                	{
+                   	 	Buffer.Prevchar();
+                	}
+                	Buffer = Buffer.Getsbc();
+                	while(!Buffer.Isend())
+                	{
+                    	Buffer.Nextchar();
+                	}
+                	for(unsigned int i = 0; i < 9;i++)
+                	{
+                    	Buffer.Prevchar();
+                	}
+                	Buffer = Buffer.Getspc();
+                	//Got the Digits
+					
+					if(!DoSend(m_socket,"105:" + Buffer + "\r\n"))
+					{
+						closesocket(m_socket);
+    					return true;
+					}
+					if(!DoRecv(m_socket,Buffer))
+					{
+						closesocket(m_socket);
+    					return true;
+					}
+					
+					if(ParseCommLine(Buffer,Item,Value) && Item=="253")
+					{
+						if(!DoRecv(m_socket,Buffer))
+						{
+							closesocket(m_socket);
+    						return true;
+						}
+					
+						if(ParseCommLine(Buffer,Item,Value) && Item=="205")
+						{
+							//Get nextrange
+							mpz_set_str(counter,(const char *)Value,10);
+                            closesocket(m_socket);
+    						return false;
+						}
+						else
+						{
+							//Unknown
+							DoSend(m_socket,"106:Goodbye, Invalid Command\r\n");
+						}
+					}
+					else
+					{
+						//Unknown
+						DoSend(m_socket,"106:Goodbye, Invalid Command\r\n");
+					}
+				}
+				else
+				{
+					//Unknown
+					DoSend(m_socket,"106:Goodbye, Invalid Command\r\n");
+				}
+			}
+			else
+			{
+				//Unknown
+				DoSend(m_socket,"106:Goodbye, Invalid Command\r\n");
+			}
+		}
+		else
+		{
+			//Unknown
+			DoSend(m_socket,"106:Goodbye, Invalid Command\r\n");
+		}
+	}
+	else
+	{
+		//Didn't Say Hello
+		DoSend(m_socket,"106:Goodbye, You didn't say Hello\r\n");
+	}
+    
+    closesocket(m_socket);
+    return true;
 }
 
-#ifdef STATS_VERSION
 DWORD WINAPI StatsListen(void*)
 {
     WSADATA wsaData;
@@ -790,7 +850,9 @@ DWORD WINAPI StatsListen(void*)
     if( iResult != NO_ERROR )
     {
         MessageBox(NULL,"Failed to initiate \"Windows Sockets 2\".","Winsock Error",MB_OK | MB_ICONERROR | MB_APPLMODAL);
-        return 0;
+		Windowlessquit = true;
+		PostMessage(Inviswnd,WM_RQUIT,0,0);
+        ExitThread(0);
     }
      
     // Create a socket.
@@ -801,7 +863,9 @@ DWORD WINAPI StatsListen(void*)
     {
         WSACleanup();
         MessageBox(NULL,"Failed to initiate socket.","Winsock Error",MB_OK | MB_ICONERROR | MB_APPLMODAL);
-        return 0;
+		Windowlessquit = true;
+		PostMessage(Inviswnd,WM_RQUIT,0,0);
+        ExitThread(0);
     }
     
     // Bind the socket.
@@ -816,12 +880,7 @@ DWORD WINAPI StatsListen(void*)
           WSACleanup();
          //printf( "bind() failed.\n" );
          closesocket(m_socket);
-         MessageBox(NULL,"Failed to bind socket.\nPort may already be in use.","Winsock Error",MB_OK | MB_ICONERROR);
-         
-         
-         ///
-         //SHUTDOWN PROGRAM!
-         ///
+         MessageBox(NULL,"Failed to bind Stats socket.\nPort may already be in use.","Winsock Error",MB_OK | MB_ICONERROR);
          return 0;
     }
     
@@ -833,17 +892,13 @@ DWORD WINAPI StatsListen(void*)
          WSACleanup();
          //printf( "Error listening on socket.\n");
          MessageBox(NULL,"Failed to listen on socket.","Winsock Error",MB_OK | MB_ICONERROR | MB_APPLMODAL);
-              
-         ///
-         //SHUTDOWN PROGRAM!
-         ///
          return 0;
     }
     
     SOCKET AcceptSocket;
     sockaddr_in clientaddr;
     
-    while (1)
+    while (!Windowlessquit)
     {          
         AcceptSocket = (unsigned int)SOCKET_ERROR;
         while ( AcceptSocket == SOCKET_ERROR )
@@ -866,25 +921,19 @@ DWORD WINAPI StatsListen(void*)
 
     }
 }
-#endif
 
 DWORD WINAPI MainThread(void*)
 {
-	#ifdef STATS_VERSION
-		statthread = CreateThread(NULL,0,StatsListen,NULL,0,NULL);
-    #endif
 	Sleep(50);
 	PostMessage(Splashwnd,WM_SETLOADTEXT,0,(LPARAM)"Loading Settings...");
 	Stat.Update(6,"Loading Settings...");
-	if(!Conf.Open())
+	Conf.Open();
+	Stat.Update(6,"Saving Settings...");
+	Conf.Save();
+	
+	if(Conf.Stats)
 	{
-		Stat.Update(6,"Saving Settings...");
-		if(!Conf.Save())
-		{
-			MessageBox(NULL,"Failed to load Config.cfg","Error: Main.DLL",MB_OK);
-			PostMessage(Inviswnd,WM_RQUIT,0,0);
-			ExitThread(0);
-		}
+		statthread = CreateThread(NULL,0,StatsListen,NULL,0,NULL);
 	}
 	
 	Stat.Update(6,"Preparing Data...");
@@ -1000,6 +1049,7 @@ bool APIENTRY Main(int nFunsterStil,HINSTANCE instance)
 	Inviswnd = CreateDialog(thisinstance,MAKEINTRESOURCE(IDD_INVIS),NULL,(DLGPROC)InvisDialogProcedure);
 	//ShowWindow (Inviswnd, SW_SHOW);
 	
+	//if made so it doesnt get created check taskbar created msg
 	TrayIcon hIcon(thisinstance);
 	hGlobalIcon = &hIcon;
 	
@@ -1011,26 +1061,34 @@ bool APIENTRY Main(int nFunsterStil,HINSTANCE instance)
 	
 	thread = CreateThread(NULL,0,MainThread,NULL,0,NULL); //Returns handle to thread, may be useful...
 	
-	MSG messages;
-	// Run the message loop. It will run until GetMessage() returns 0 
-    while (GetMessage (&messages, NULL, 0, 0) > 0)
-    {
-        if(!IsDialogMessage(Inviswnd, &messages) && !IsDialogMessage(Splashwnd, &messages) && !IsDialogMessage(Stat.Statuswnd, &messages))
-        {
-            // Translate virtual-key messages into character messages 
-            TranslateMessage(&messages);
-            // Send message to WindowProcedure 
-            DispatchMessage(&messages);
-        }
-    }
+	if(IsWindow(Inviswnd))
+	{
+		MSG messages;
+		// Run the message loop. It will run until GetMessage() returns 0 
+    	while (GetMessage (&messages, NULL, 0, 0) > 0)
+    	{
+        	if(!IsDialogMessage(Inviswnd, &messages) && !IsDialogMessage(Splashwnd, &messages) && !IsDialogMessage(Stat.Statuswnd, &messages) && !IsDialogMessage(Sett.Settingwnd, &messages))
+        	{
+            	// Translate virtual-key messages into character messages 
+            	TranslateMessage(&messages);
+            	// Send message to WindowProcedure 
+            	DispatchMessage(&messages);
+        	}
+    	}
+	}
+	else
+	{
+		while(!Windowlessquit)
+		{
+			Sleep(100);
+		}
+	}
     DestroyWindow(Inviswnd);
     Inviswnd=NULL;
     DestroyWindow(Splashwnd);
     Splashwnd=NULL;
     Sleep(50);
     CloseHandle(thread);
-    #ifdef STATS_VERSION
-    	CloseHandle(statthread);
-    #endif
+    CloseHandle(statthread);
 	return doExit;
 }

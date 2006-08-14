@@ -10,8 +10,12 @@
 //Invis Dialog
 LRESULT CALLBACK InvisDialogProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	static UINT s_uTaskbarRestart;
     switch (message)                  /* handle the messages */
     {
+		case WM_CREATE: 
+        	s_uTaskbarRestart = RegisterWindowMessage(TEXT("TaskbarCreated")); 
+        	break;
         case WM_INITDIALOG:
             SetClassLong(hwnd,GCL_HICON,(long) LoadIcon(thisinstance,"A"));
             SetClassLong(hwnd,GCL_HICONSM,(long) LoadIcon(thisinstance,"A"));
@@ -24,6 +28,8 @@ LRESULT CALLBACK InvisDialogProcedure (HWND hwnd, UINT message, WPARAM wParam, L
             	GetCursorPos(&cord);
             	HMENU menu;
             	menu = CreatePopupMenu();
+            	AppendMenu(menu,MF_ENABLED|MF_STRING, ID_MENU_HELP,"&Help");
+            	AppendMenu(menu,MF_ENABLED|MF_STRING, ID_MENU_SETT,"S&ettings");
             	AppendMenu(menu,MF_ENABLED|MF_STRING, ID_MENU_STATUS,"&Status");
             	AppendMenu(menu,MF_ENABLED|MF_STRING, ID_MENU_EXIT,"&Exit");
             	SetForegroundWindow(hwnd);
@@ -49,10 +55,23 @@ LRESULT CALLBACK InvisDialogProcedure (HWND hwnd, UINT message, WPARAM wParam, L
                 case ID_MENU_STATUS:
 					Stat.Create();
 					break;
+				case ID_MENU_SETT:
+					Sett.Create();
+					break;
+				case ID_MENU_HELP:
+                    WinHelp(hwnd,"HELP.HLP",HELP_FINDER,0);
+                    break;
 			}
 			return 0;
             break;
         default:
+			if( message == s_uTaskbarRestart)
+			{
+				hGlobalIcon->Remove();
+				Sleep(500);
+				hGlobalIcon->Add();
+				break;
+			}
             return false;
     }
     return 0;
@@ -110,6 +129,31 @@ LRESULT CALLBACK SplashDialogProcedure (HWND hwnd, UINT message, WPARAM wParam, 
     		Splashwnd = NULL;
 			break;
         default:
+            return false;
+    }
+    return 0;
+}
+
+//Settings
+LRESULT CALLBACK SettingDialogProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{   
+    switch (message)/* handle the messages */
+    {
+        case WM_INITDIALOG:
+            SetClassLong(hwnd,GCL_HICON,(long) LoadIcon(thisinstance,"A"));
+            SetClassLong(hwnd,GCL_HICONSM,(long) LoadIcon(thisinstance,"A"));
+            return true;      
+            break;
+        case WM_CLOSE:
+			if(Sett.Close())
+			{
+            	DestroyWindow(hwnd);
+            	Sett.Settingwnd=NULL;
+			}
+            return 0;
+            break;
+        default:                      /* for messages that we don't deal with */
+            //return DefWindowProc (hwnd, message, wParam, lParam);
             return false;
     }
     return 0;

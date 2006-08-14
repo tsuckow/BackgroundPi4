@@ -1,0 +1,340 @@
+##v##00.4.50
+pagenumber=2
+linenumber=268
+sellength=0
+topline=0
+EditHelpFileTitle.Text=Background Pi Help
+form2.STextForeHeadline.Color=16777215
+form2.STextForeText.Color=0
+form2.STextBackHeadline.Color=12845056
+form2.STextBackText.Color=14876671
+form2.STextHeadlineFont.Caption=Arial
+form2.STextTextFont.Caption=Arial
+form2.sTextFontSizeForHeadline.Caption=12
+form2.sTextFontSizeForText.Caption=9
+form2.CBoxBold.Checked=1
+form2.CBoxNoForeColor.Checked=0
+form2.CBoxLanguageID.ItemIndex=0
+form2.CBoxCharSet.ItemIndex=0
+form2.EditContents.Text=Contents
+form2.EditFrontpageName.Text=Front page with index
+form2.CBoxDontMakeFrontpage.Checked=1
+form2.EditLogoPath.Text=pi.bmp
+form2.EditFrontpageButtonCaption.Text=Front page
+form2.RGroupHorizontalAlignment.ItemIndex=0
+form2.RGroupVerticalAlignment.ItemIndex=0
+form2.CBoxBlankLineBeforeEachHeading.Checked=1
+form2.CBoxMakeFrontPageButton.Checked=0
+form2.SpinEditFrontpageIDnumber.Value=9999
+form2.CBoxAddAboutMenu.Checked=1
+form2.EditAboutMenuCaption.Text=&About this help file...
+form2.CBoxPopupPagesForAboutMenu.Tag=4
+form2.EditConstantNameFilePrefix.Text=pageConstants_
+form2.EditConstantNameFileExt.Text=txt
+form2.CBoxDontMakeHeadersKeywords.Checked=0
+form2.CBoxDontMakeTargetsKeywords.Checked=0
+copyToPath=
+form5.sTextColor1=0
+form5.sTextColor2=9743070
+form5.sTextColor3=12386403
+form5.sTextColor4=255
+form5.sTextColor5=8421376
+form5.sTextColor6=8650752
+form5.sTextColor7=33280
+form5.sTextColor8=32896
+form5.sTextColor9=13026246
+form5.sTextColor10=16711680
+form5.sTextColor11=65280
+form5.sTextColor12=8651007
+form5.sTextColor13=16777215
+form5.sTextColor14=16757429
+form5.sTextColor15=9764863
+form5.sTextColor16=8421504
+form5.sTextComment1=
+form5.sTextComment2=
+form5.sTextComment3=
+form5.sTextComment4=
+form5.sTextComment5=
+form5.sTextComment6=
+form5.sTextComment7=
+form5.sTextComment8=
+form5.sTextComment9=
+form5.sTextComment10=
+form5.sTextComment11=
+form5.sTextComment12=
+form5.sTextComment13=
+form5.sTextComment14=
+form5.sTextComment15=
+form5.sTextComment16=
+NumOfPages=13
+------------ end of project settings / page settings follow ------------
+pageC.pages[0].ImageIndex=-1
+pageTitle(0).Text=About Background Pi
+getPageConstantLabel(0).Caption=About
+getPageContentHeaderLabel(0).Caption=About Background Pi
+pageKeywords(0).Text=
+pageC.pages[1].ImageIndex=-1
+pageTitle(1).Text=Icons
+getPageConstantLabel(1).Caption=Icon
+getPageContentHeaderLabel(1).Caption=Icons
+pageKeywords(1).Text=
+pageC.pages[2].ImageIndex=-1
+pageTitle(2).Text=Change Log
+getPageConstantLabel(2).Caption=Change
+getPageContentHeaderLabel(2).Caption=Change Log
+pageKeywords(2).Text=
+pageC.pages[3].ImageIndex=-1
+pageTitle(3).Text=Future Changes
+getPageConstantLabel(3).Caption=Future
+getPageContentHeaderLabel(3).Caption=Future Changes
+pageKeywords(3).Text=
+pageC.pages[4].ImageIndex=-1
+pageTitle(4).Text=Status Dialog
+getPageConstantLabel(4).Caption=StatusDLG
+getPageContentHeaderLabel(4).Caption=Status Dialog
+pageKeywords(4).Text=
+pageC.pages[5].ImageIndex=-1
+pageTitle(5).Text=Settings Dialog
+getPageConstantLabel(5).Caption=ConfigDLG
+getPageContentHeaderLabel(5).Caption=Configuration Dialog
+pageKeywords(5).Text=
+pageC.pages[6].ImageIndex=-1
+pageTitle(6).Text=FAQ
+getPageConstantLabel(6).Caption=FAQ
+getPageContentHeaderLabel(6).Caption=FAQ
+pageKeywords(6).Text=
+pageC.pages[7].ImageIndex=-1
+pageTitle(7).Text=Energy Saving Settings
+getPageConstantLabel(7).Caption=Energy
+getPageContentHeaderLabel(7).Caption=Energy Saving Settings
+pageKeywords(7).Text=
+pageC.pages[8].ImageIndex=-1
+pageTitle(8).Text=Contacts
+getPageConstantLabel(8).Caption=Contact
+getPageContentHeaderLabel(8).Caption=Contacts
+pageKeywords(8).Text=
+pageC.pages[9].ImageIndex=0
+pageTitle(9).Text=Status Dialog
+getPageConstantLabel(9).Caption=Status
+getPageContentHeaderLabel(9).Caption=
+pageKeywords(9).Text=
+pageC.pages[10].ImageIndex=0
+pageTitle(10).Text=Configuration Dialog
+getPageConstantLabel(10).Caption=Config
+getPageContentHeaderLabel(10).Caption=
+pageKeywords(10).Text=
+pageC.pages[11].ImageIndex=0
+pageTitle(11).Text=URL
+getPageConstantLabel(11).Caption=Url
+getPageContentHeaderLabel(11).Caption=
+pageKeywords(11).Text=
+pageC.pages[12].ImageIndex=0
+pageTitle(12).Text=EMAIL
+getPageConstantLabel(12).Caption=Email
+getPageContentHeaderLabel(12).Caption=
+pageKeywords(12).Text=
+pageC.pages[13].ImageIndex=0
+pageTitle(13).Text=About Help
+getPageConstantLabel(13).Caption=Help
+getPageContentHeaderLabel(13).Caption=
+pageKeywords(13).Text=
+------------ end of page titles / full text of pages follow ------------
+----- SHM ---- page 0 ---- 
+\{bmc pi.bmp\}
+<color=6b>VERSION</color>
+<b>Version:</b> 4
+<b>Status:</b> Pre-Alpha
+<b>Help:</b> v0.1
+
+
+<color=6b>CREATION</color>
+<b>Created using:</b> Dev-C++
+<b>Created by:</b> Deathbob
+<b>Creator E-mail:</b> {\uldb deathbob@my180.net}{\v !ExecFile(mailto:deathbob@my180.net,,9,)}
+<b>Creator Site:</b> {\uldb http://defcon1.hopto.org}{\v !ExecFile(http://defcon1.hopto.org,,9,)}
+
+<color=6b>ORIGINAL SOURCE</color>
+<b>Author:</b> Fabrice Bellard
+
+<color=6b>\'A9COPYRIGHT</color>
+This program is distributed under the GNU General Public License
+
+<color=6b>THANKS</color>
+	Project Pi
+	SourceForge
+	Experts @ Experts-Exchange.com
+	The Microsoft Developers Network
+	Bloodshed Software
+	Inno Setup
+	The Code Project
+	W3 Schools
+	Our Pre-Alpha, Alpha, & Beta Testers
+	Anyone else we've missed
+
+<color=6b>This help document was created in:</color>
+	<b>Shalom Help Maker</b>
+----- SHM ---- page 1 ---- 
+<color=4>This page is futile untill these icons are integrated into v4</color>
+
+\{bml Backpi32_Start_N.bmp\}The program is "Starting Up".<p>
+\{bml Backpi32_Start_E.bmp\}The program experienced an error while "Starting Up", it may attempt to repair it, or it will just sit there, or close.<p>
+\{bml Backpi32_Calc_N.bmp\}The program is "Calculating".<p>
+\{bml Backpi32_Calc_E.bmp\}The program experienced an error while "Calculating", it may attempt to repair it, or it will just sit there, or close.<p>
+\{bml Backpi32_Comm_N.bmp\}The program is "Communicating" with the server.<p>
+\{bml Backpi32_Comm_E.bmp\}The program experienced an error while "Communicating" with the server, it may attempt to repair it, or it will just sit there, or close.<p>
+\{bml Backpi32_Shut_N.bmp\}The program is performing shutdown operations.<p>
+\{bml Backpi32_Unkn_E.bmp\}The program has experienced a horrific error, and doesn't know what to do.  An error like this may return unpredictable results!
+----- SHM ---- page 2 ---- 
+<color=7>v4 Release</color>
+
+<color=7>v4 Beta</color>
+
+<color=7>v4 Alpha</color>
+
+<color=7>v4 Pre-Alpha</color>
+<color=10b>08-13-2006</color>
+	<color=4>Add:</color> Check for updates before communicating
+	<color=4>Update:</color> Migrated BackPi v4 completely to new server
+
+<color=10b>08-12-2006</color>
+	<color=4>Update/Add:</color> Help File
+
+<color=6>FUTURE CHANGES WILL BE LOGGED BY DATE</color>
+
+<color=10b>V4 Line</color>
+	<color=4>Add:</color> Self Updater
+	<color=4>Add:</color> Splash Screen Status Bar
+	<color=4>Change:</color> New Config File for greater expandability
+	<color=4>Fix:</color> Precision was becoming insufficient so we increased it
+	<color=4>Update:</color> Status has more information about progress
+	<color=4>Update:</color> Major speed improvements to GMP
+	<color=4>Update:</color> Improvements to DString
+
+<color=10b>V3.2</color>
+	<color=4>Change:</color> All math (except the Natural Log) is handled by GMP.
+	<color=4>Fix:</color> Worked on the DString header and fixed errors making it sometimes crash.
+
+<color=10b>V3.1</color>
+	<color=4>Add:</color> <pop=SHM_contents0010>Status Dialog</pop>
+	<color=4>Add:</color> <pop=SHM_contents0011>Configuration Dialog</pop>
+	<color=4>Add:</color> Help File
+	<color=4>Add:</color> New Icons
+	<color=4>Change:</color> Created Mode System to take place of shutdown and integration of new icons
+	<color=4>Fix:</color> Wrong variable in Timeleft algorithm making it inaccurate
+	<color=4>Fix:</color> Fixed the no delay bug between resume saves
+	<color=4>Update:</color> Improved missing configuration handling
+	<color=4>Update:</color> Updated About Dialog
+	<color=4>Update:</color> Minor Improvements To Algorithm
+
+<color=10b>V3.0</color>
+	<color=4>Add:</color> Server - Client  Concept
+	<color=4>Fix:</color> Corrected Shutdown Handling
+	<color=4>Update:</color> Minor Improvements To Algorithm
+
+<c><bullet.bmp> <bullet.bmp> <bullet.bmp> <jump=SHM_contents0004>Future Changes</jump> <bullet.bmp> <bullet.bmp> <bullet.bmp></c>
+----- SHM ---- page 3 ---- 
+<color=4b>Possible Features of v4</color>
+	<color=4>Add:</color> Proccessor selection for GMP, default being generic
+	<color=4>Add:</color> Username/Groupname, tracking of who helped with what
+
+<c><bullet.bmp> <bullet.bmp> <bullet.bmp> <jump=SHM_contents0003>Change Log</jump> <bullet.bmp> <bullet.bmp> <bullet.bmp></c>
+	
+----- SHM ---- page 4 ---- 
+\par\ql\{bml SC_Status.bmp\}\par\ql
+
+<color=6b>INFORMATION</color>
+	<color=5b>Mode:</color> What Background Pi is currently doing.
+	<color=5b>% Complete:</color> What % of the current task has been completed.
+	<color=5b>Time Elapsed:</color> How long Backpi has been running on the current calculation.
+	<color=5b>Time Remaining:</color> How much time remains in the current task.
+	<color=5b>Total Time:</color> The total amount of time the task will take.
+	<color=5b>Iteration Time:</color> How long each iteration takes.
+	<color=5b>Iteration:</color> What "iteration" of the current calculation it is on.
+	<color=5b>Est. # Iterations:</color> The way the algorythm is designed, the # of iterations can only be predicted in a reasonable amount of time.
+	<color=5b>Calculation:</color> For calculation mode, tells the first digit position in the nine being calculated.
+----- SHM ---- page 5 ---- 
+\par\ql\{bml SC_Config.bmp\}\par\ql
+
+<color=6b>INFORMATION</color>
+ 	<color=5b>Host:</color> The domain address of the the server to connect to. You shouldn't change this. Ex:
+		<color=10><b>Correct:</b> www.example.com</color>
+		<color=4><b>Incorrect:</b> http://www.example.com</color>
+	<color=5b>Port:</color> The network port on the host to connect to. You shouldn't change this.
+	<color=5b>Timeout:</color> Upon failure, BackPi will wait this long before trying again.
+
+	<color=5b>Resume:</color> The amount of time in seconds between resume data saves. Set to 0 (zero) to NOT save resume data.
+	<color=5b>Delay:</color> If > 0, BackPi will wait this long in milliseconds after each iteration.  This reduces CPU usage on your system.  A value of 10 or lower should be fine.
+
+\par\ql\{bml SC_Config_Save.bmp\}\par\ql
+
+<color=6b>INFORMATION</color>
+	<color=5b>Yes:</color> Save and close the configuration editor.
+	<color=5b>No:</color> Close the configuration editor without saving.
+	<color=5b>Cancel:</color> Go back to the configuration editor.
+----- SHM ---- page 6 ---- 
+Error on Comm
+<color=6b>Q:</color>
+Background Pi shows a icon with a yellow <b>!</b> on two arrows.
+<color=6b>A:</color>
+This may mean a few things:
+<color=5>1)</color> The Server Is Down
+<color=5>2)</color> The server is incorrectly entered into the configuration file
+<color=5>3)</color> Your ISP, Firewall, or Router is blocking port 31415
+Allow a day or two, if its still not communicating, try looking for updates or checking settings.
+
+
+System Requirements
+<color=6b>Q:</color>
+What are the minimum system requirements for Background Pi?
+<color=6b>A:</color>
+<color=5b>OS:</color> Tested on: XP, Linux with Wine
+<color=5b>Storage:</color> Aprox. 3 megabytes of hard drive space
+
+<color=5b>Additional Considerations:</color>
+<color=4>1) </color>An internet connection, preferably connected at least once per day.
+<color=4>3) </color>Background pi saves every 20 seconds; please do NOT enable hard drive off as an energy feature. <jump=SHM_contents0008>More Info...</jump>
+
+----- SHM ---- page 7 ---- 
+\par\ql\{bml SC_Powermanagement.bmp\}\par\ql
+
+<color=6b>INFORMATION</color>
+These are the suggested settings for energy star compliant systems. You can access the Power Management dialog through the screen saver tab in Display Properties, along with through Control Panel.  Please do <b>NOT</b> activate "Hard Disk Off" or "System Standby" for they do not allow Background Pi to keep running.  You may have "Monitor Off" enabled; we suggest that you enable "Monitor Off"  with no screensaver if your monitor is energy star compliant.  However, if it is not, please DISABLE this and use blank screen as your screen saver (below).
+
+\par\ql\{bml SC_Displayproperties.bmp\}\par\ql
+
+<color=6b>INFORMATION</color>
+This shows blank screen as the screen saver, this is also where you get into the Power Management dialog, along with through Control Panel.
+----- SHM ---- page 8 ---- 
+<color=6b>Program</color>
+<b>E-mail:</b> {\uldb support@defcon1.hopto.org}{\v !ExecFile(support@defcon1.hopto.org,,9,SHM_contents0013)}
+	<color=4>Use this if you have: Questions, Comments, Suggestions, or Need Help</color>
+<b>Site:</b> {\uldb http://defcon1.hopto.org}{\v !ExecFile(http://defcon1.hopto.org,,9,SHM_contents0012)}
+
+<color=6b>Project Pi</color>
+<b>Site:</b> {\uldb http://projectpi.sourceforge.net}{\v !ExecFile(http://projectpi.sourceforge.net,,9,SHM_contents0012)}
+----- SHM ---- page 9 ---- 
+<color=6b>STATUS DIALOG</color>
+The dialog showing the mode the program is in (Calculating | Communicating | Error).
+It also shows the time remaining on calculation, or till it will attempt an acton again
+Plus some misc calculation info.
+<jump=SHM_contents0005>More Info...</jump>
+----- SHM ---- page 10 ---- 
+<color=6b>CONFIGURATION DIALOG</color>
+Allows you to change sttings like:
+Server Location, Delay Before Trying Failed Task Again, Program Priority
+<jump=SHM_contents0006>More Info...</jump>
+----- SHM ---- page 11 ---- 
+<color=6b>UH OH!</color>
+Something went wrong while opening the URL.
+----- SHM ---- page 12 ---- 
+<color=6b>UH OH!</color>
+Something went wrong while opening your E-MAIL Client.
+----- SHM ---- page 13 ---- 
+<color=6b>CREATED WITH</color>
+<color=4>Shalom Help Maker</color>
+
+Copyright 2001-2002 Finn Ekberg Christiansen,      
+Copenhagen, Denmark.
+This help file was made with the freeware
+Shalom Help Maker. Get it here:
+{\uldb www.danish-shareware.dk/soft/shelpm/}{\v !ExecFile(http://www.danish-shareware.dk/soft/shelpm/,,9,SHM_contents0012)}

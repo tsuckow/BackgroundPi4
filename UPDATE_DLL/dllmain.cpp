@@ -19,6 +19,8 @@ bool Update_Updater = false;
 
 bool Windowlessquit = false;
 
+bool Verifying = false;
+
 HWND Inviswnd = NULL;
 HWND Splashwnd = NULL;
 
@@ -243,14 +245,18 @@ DWORD WINAPI UpdateThread(void*)
 						{
 							continue;
 						}
-						else if(Item = "204")
+						else if(Item = "204")//Need's Update
 						{
+							#ifndef NO_UPDATE_UPDATE
+							#ifndef NO_UPDATE
+							Update_Updater = true;
+							#endif
+							#endif
 							SendMessage(Splashwnd,WM_SETLOADTEXT,0,(LPARAM)(const char *)(DString)("Updating: " + File));
-							if(File == "UPDATE.dll")
+							if(File == "UPDATE.dll" || Verifying)
 							{
 								#ifndef NO_UPDATE_UPDATE
 								closesocket(m_socket);
-								Update_Updater = true;
 								Windowlessquit = true;
 								PostMessage(Inviswnd,WM_RQUIT,0,0);
 								ExitThread(0);
@@ -375,6 +381,48 @@ DWORD WINAPI UpdateThread(void*)
 	//Update_Updater = true;
 	Windowlessquit = true;
 	PostMessage(Inviswnd,WM_RQUIT,0,0);
+}
+
+
+bool APIENTRY Verify(HINSTANCE instance)
+{
+	Verifying = true;
+	
+	thisinstance = instance;
+	
+	//Display Splash Screen If NOT started in minimized
+	Inviswnd = CreateDialog(thisinstance,MAKEINTRESOURCE(IDD_INVIS),NULL,(DLGPROC)InvisDialogProcedure);
+	
+	thread = CreateThread(NULL,0,UpdateThread,NULL,0,NULL); //Returns handle to thread, may be useful...
+	
+	if(IsWindow(Inviswnd))
+	{
+		MSG messages;
+		// Run the message loop. It will run until GetMessage() returns 0 
+    	while (GetMessage (&messages, NULL, 0, 0) > 0)
+    	{
+        	if(!IsDialogMessage(Inviswnd, &messages))
+        	{
+            	// Translate virtual-key messages into character messages 
+            	TranslateMessage(&messages);
+            	// Send message to WindowProcedure 
+            	DispatchMessage(&messages);
+        	}
+    	}
+	}
+	else
+	{
+		while(!Windowlessquit)
+		{
+			Sleep(100);
+		}
+	}
+	
+	DestroyWindow(Inviswnd);
+    Inviswnd=NULL;
+    Sleep(50);
+    CloseHandle(thread);
+	return Update_Updater;
 }
 
 bool APIENTRY Update(int nFunsterStil,HINSTANCE instance)

@@ -218,6 +218,21 @@ bool operator== (const char * StringA,DString const & StringB)
 {
     return (DString)StringA == StringB;
 }
+
+bool operator!= (DString const & StringA,const DString & StringB)
+{
+    return !(StringA == StringB);
+}
+
+bool operator!= (DString const & StringA,const char * StringB)
+{
+    return !(StringA == StringB);
+}
+
+bool operator!= (const char * StringA,DString const & StringB)
+{
+    return !(StringA == StringB);
+}
 //
 //
 /* END OPERATOR OVERLOADING */

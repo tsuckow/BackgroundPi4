@@ -17,4 +17,6 @@
 
 DLLIMPORT bool Update(int,HINSTANCE);
 
+DLLIMPORT bool Verify(HINSTANCE);
+
 #endif /* _BPC_UPDATE_DLL_H_ */

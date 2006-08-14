@@ -24,6 +24,8 @@
 
 #define ID_MENU_EXIT    (WM_USER+0)
 #define ID_MENU_STATUS  (WM_USER+1)
+#define ID_MENU_SETT  	(WM_USER+2)
+#define ID_MENU_HELP	(WM_USER+3)
 
 #define SUM_PREC 50
 
@@ -36,8 +38,29 @@ extern HINSTANCE thisinstance;
 extern LRESULT CALLBACK InvisDialogProcedure (HWND, UINT, WPARAM, LPARAM); //Hidden Dialog
 extern LRESULT CALLBACK StatusDialogProcedure (HWND, UINT, WPARAM, LPARAM); //Status Dialog
 extern LRESULT CALLBACK SplashDialogProcedure (HWND, UINT, WPARAM, LPARAM); //Spalsh Dialog
+extern LRESULT CALLBACK SettingDialogProcedure (HWND, UINT, WPARAM, LPARAM); //Spalsh Dialog
 
 DWORD WINAPI MainThread(void*);
+
+class Config
+{
+	public:
+		Config();
+		bool Open();
+		bool Save();
+		
+		//Vars
+		short Port;
+		int Delay;
+		int Resume;
+		int Timeout;
+		DString Host;
+		DString Name;
+		bool Stats;
+		
+};
+
+extern Config Conf;
 
 class StatusDlg
 {
@@ -59,6 +82,10 @@ class StatusDlg
 				this->Stats[6]="Init...";
 				this->Stats[7]="...";
 				this->Stats[8]="...";
+				for(unsigned short i = 0;i<=StatusDlgMax;i++)
+                {
+					this->Update(i,this->Stats[i]);
+				}
 			};
 		~StatusDlg() {DestroyWindow(this->Statuswnd);this->Statuswnd=NULL;};		
 		void Update(unsigned short n,DString Text)
@@ -91,23 +118,108 @@ class StatusDlg
 
 extern StatusDlg Stat;
 
-class Config
+
+class SettingDlg
 {
+	#define SettingDlgMax 5
 	public:
-		Config();
-		bool Open();
-		bool Save();
-		
-		//Vars
-		short Port;
-		int Resume;
-		int Timeout;
-		int Delay;
-		DString Host;
-		
+		SettingDlg() 
+			{
+				this->Settingwnd=NULL;
+			};
+		void Reset()
+			{
+				this->Setts[0]=Conf.Host;
+				this->Setts[1]=Conf.Port;
+				this->Setts[2]=Conf.Timeout;
+				this->Setts[3]=Conf.Resume;
+				this->Setts[4]=Conf.Delay;
+				this->Setts[5]=Conf.Name;
+			};
+		~SettingDlg() {DestroyWindow(this->Settingwnd);this->Settingwnd=NULL;};
+		bool Close()
+			{
+				bool changed = false;
+				for(unsigned short i = 0;i<=SettingDlgMax;i++)
+                {
+					char buffer[998];
+					GetDlgItemText(this->Settingwnd,IDC_HOST+i,buffer,998);
+					this->Setts[i] = buffer;
+				}
+				
+				if(this->Setts[0]!=Conf.Host) changed = true;
+				if(this->Setts[1]!=(DString)Conf.Port) changed = true;
+				if(this->Setts[2]!=(DString)Conf.Timeout) changed = true;
+				if(this->Setts[3]!=(DString)Conf.Resume) changed = true;
+				if(this->Setts[4]!=(DString)Conf.Delay) changed = true;
+				if(this->Setts[5]!=(DString)Conf.Name) changed = true;
+				
+				if(this->Setts[5]=="")
+				{
+					MessageBox(this->Settingwnd,"Username CANNOT be blank.","Settings",MB_YESNOCANCEL | MB_ICONHAND | MB_TASKMODAL);
+					return false;
+				}
+				
+				if(changed)
+				{
+					switch(MessageBox(this->Settingwnd,"Save changes?","Settings",MB_YESNOCANCEL | MB_ICONQUESTION | MB_TASKMODAL))
+					{
+						case IDYES:
+							Conf.Host=this->Setts[0];
+							Conf.Port=atoi(this->Setts[1]);
+							Conf.Timeout=atoi(this->Setts[2]);
+							Conf.Resume=atoi(this->Setts[3]);
+							Conf.Delay=atoi(this->Setts[4]);
+							Conf.Name=this->Setts[5];
+							if(!Conf.Save())
+							{
+								MessageBox(NULL,"Failed to save to Config.cfg\nYou may not have permission to write to that directory.","Error: Main.DLL",MB_OK);
+							}
+						case IDNO:
+							return true;
+							break;
+						case IDCANCEL:
+							return false;
+							break;
+					}
+				}
+				else
+				{
+					return true;
+				}
+			}
+			
+		void Update(unsigned short n,DString Text)
+			{
+				if(n<=SettingDlgMax)
+				{
+					this->Setts[n]=Text;
+					if (IsWindow(this->Settingwnd))
+					{
+						SetDlgItemText(this->Settingwnd,IDC_HOST+n,Text);
+					}
+				}
+			};
+		void Create()
+			{			
+				if (!IsWindow(this->Settingwnd)) 
+                {
+					this->Reset();
+                    this->Settingwnd = CreateDialog(thisinstance,MAKEINTRESOURCE(IDD_SETT),NULL,(DLGPROC)SettingDialogProcedure);
+                    ShowWindow(this->Settingwnd,SW_SHOW);
+                    for(unsigned short i = 0;i<=SettingDlgMax;i++)
+                    {
+						this->Update(i,this->Setts[i]);
+					}
+                }    
+                SetForegroundWindow(this->Settingwnd);
+			};
+		HWND Settingwnd;
+		DString Setts[SettingDlgMax+1];
 };
 
-extern Config Conf;
+extern SettingDlg Sett;
+
 
 class TrayIcon
 {
@@ -121,6 +233,8 @@ class TrayIcon
 		HINSTANCE iconinstance;
 		DString tiptext;
 };
+
+extern TrayIcon * hGlobalIcon;
 
 # define DLLIMPORT extern "C" __declspec(dllexport)
 

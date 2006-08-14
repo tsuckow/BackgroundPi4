@@ -10,6 +10,7 @@
 #include <windows.h>
 
 # define DLLIMPORT extern "C" __declspec(dllexport)
+DLLIMPORT bool Verify(HINSTANCE);
 
 DLLIMPORT bool Update(int,HINSTANCE);
 
