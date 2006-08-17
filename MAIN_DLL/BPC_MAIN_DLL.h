@@ -26,12 +26,14 @@
 #define ID_MENU_STATUS  (WM_USER+1)
 #define ID_MENU_SETT  	(WM_USER+2)
 #define ID_MENU_HELP	(WM_USER+3)
+#define ID_MENU_ABOUT	(WM_USER+4)
 
 #define SUM_PREC 50
 
 extern bool doExit;
 extern HWND Inviswnd;
 extern HWND Splashwnd;
+extern HWND Aboutwnd;
 extern HANDLE thread;
 extern HINSTANCE thisinstance;
 
@@ -39,6 +41,7 @@ extern LRESULT CALLBACK InvisDialogProcedure (HWND, UINT, WPARAM, LPARAM); //Hid
 extern LRESULT CALLBACK StatusDialogProcedure (HWND, UINT, WPARAM, LPARAM); //Status Dialog
 extern LRESULT CALLBACK SplashDialogProcedure (HWND, UINT, WPARAM, LPARAM); //Spalsh Dialog
 extern LRESULT CALLBACK SettingDialogProcedure (HWND, UINT, WPARAM, LPARAM); //Spalsh Dialog
+extern LRESULT CALLBACK AboutDialogProcedure (HWND, UINT, WPARAM, LPARAM); //Spalsh Dialog
 
 DWORD WINAPI MainThread(void*);
 

@@ -14,6 +14,7 @@ Config Conf;
 HWND Inviswnd = NULL;
 StatusDlg Stat;
 HWND Splashwnd = NULL;
+HWND Aboutwnd = NULL;
 SettingDlg Sett;
 HANDLE thread = NULL;
 

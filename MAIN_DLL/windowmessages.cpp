@@ -28,8 +28,9 @@ LRESULT CALLBACK InvisDialogProcedure (HWND hwnd, UINT message, WPARAM wParam, L
             	GetCursorPos(&cord);
             	HMENU menu;
             	menu = CreatePopupMenu();
-            	AppendMenu(menu,MF_ENABLED|MF_STRING, ID_MENU_HELP,"&Help");
-            	AppendMenu(menu,MF_ENABLED|MF_STRING, ID_MENU_SETT,"S&ettings");
+            	AppendMenu(menu,MF_ENABLED|MF_STRING, ID_MENU_ABOUT,"&About");
+				AppendMenu(menu,MF_ENABLED|MF_STRING, ID_MENU_HELP,"&Help");
+            	AppendMenu(menu,MF_ENABLED|MF_STRING, ID_MENU_SETT,"Se&ttings");
             	AppendMenu(menu,MF_ENABLED|MF_STRING, ID_MENU_STATUS,"&Status");
             	AppendMenu(menu,MF_ENABLED|MF_STRING, ID_MENU_EXIT,"&Exit");
             	SetForegroundWindow(hwnd);
@@ -61,6 +62,14 @@ LRESULT CALLBACK InvisDialogProcedure (HWND hwnd, UINT message, WPARAM wParam, L
 				case ID_MENU_HELP:
                     WinHelp(hwnd,"HELP.HLP",HELP_FINDER,0);
                     break;
+                case ID_MENU_ABOUT:
+					if (!IsWindow(Aboutwnd)) 
+                	{
+                    	Aboutwnd = CreateDialog(thisinstance,MAKEINTRESOURCE(IDD_ABOUT),NULL,(DLGPROC)AboutDialogProcedure);
+                    	ShowWindow(Aboutwnd,SW_SHOW);
+                	}    
+                	SetForegroundWindow(Aboutwnd);
+                	break;
 			}
 			return 0;
             break;
@@ -150,6 +159,28 @@ LRESULT CALLBACK SettingDialogProcedure (HWND hwnd, UINT message, WPARAM wParam,
             	DestroyWindow(hwnd);
             	Sett.Settingwnd=NULL;
 			}
+            return 0;
+            break;
+        default:                      /* for messages that we don't deal with */
+            //return DefWindowProc (hwnd, message, wParam, lParam);
+            return false;
+    }
+    return 0;
+}
+
+LRESULT CALLBACK AboutDialogProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{   
+    switch (message)/* handle the messages */
+    {
+        case WM_INITDIALOG:
+            SetClassLong(hwnd,GCL_HICON,(long) LoadIcon(thisinstance,"A"));
+            SetClassLong(hwnd,GCL_HICONSM,(long) LoadIcon(thisinstance,"A"));
+            //SetClassLong(hwnd,GCL_HBBACKGROUND,NULL);
+			return true;
+            break;
+        case WM_CLOSE:
+            DestroyWindow(hwnd);
+            Aboutwnd=NULL;
             return 0;
             break;
         default:                      /* for messages that we don't deal with */

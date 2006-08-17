@@ -7,6 +7,7 @@
  * * * * * * * * * * * * */
 
 //Resource IDS
+#define IDD_ABOUT				1004
 #define IDD_SETT				1003
 #define IDD_STAT				1002
 #define IDD_INVIS				1001
