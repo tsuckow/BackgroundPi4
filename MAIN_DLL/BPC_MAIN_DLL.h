@@ -13,7 +13,7 @@
 #include <sys/timeb.h>
 #include <fstream>
 #include <math.h>
-#include <gmp.h>
+#include "gmp.h"
 #include <winsock2.h>
 #include "exresource.h"
 #include "../dvar.hpp"
@@ -57,6 +57,7 @@ class Config
 		DString Host;
 		DString Name;
 		bool Stats;
+		DString Arch;
 		
 };
 
@@ -121,7 +122,7 @@ extern StatusDlg Stat;
 
 class SettingDlg
 {
-	#define SettingDlgMax 5
+	#define SettingDlgMax 6
 	public:
 		SettingDlg() 
 			{
@@ -135,6 +136,7 @@ class SettingDlg
 				this->Setts[3]=Conf.Resume;
 				this->Setts[4]=Conf.Delay;
 				this->Setts[5]=Conf.Name;
+				this->Setts[6]=Conf.Arch;
 			};
 		~SettingDlg() {DestroyWindow(this->Settingwnd);this->Settingwnd=NULL;};
 		bool Close()
@@ -153,10 +155,32 @@ class SettingDlg
 				if(this->Setts[3]!=(DString)Conf.Resume) changed = true;
 				if(this->Setts[4]!=(DString)Conf.Delay) changed = true;
 				if(this->Setts[5]!=(DString)Conf.Name) changed = true;
+				if(this->Setts[6]!=(DString)Conf.Arch) changed = true;
 				
 				if(this->Setts[5]=="")
 				{
-					MessageBox(this->Settingwnd,"Username CANNOT be blank.","Settings",MB_YESNOCANCEL | MB_ICONHAND | MB_TASKMODAL);
+					switch(MessageBox(this->Settingwnd,"Username CANNOT be blank.\nPress OK to fix, CANCEL to lose changes.","Settings",MB_OKCANCEL | MB_ICONHAND | MB_TASKMODAL))
+					{
+						case IDOK:
+							return false;
+							break;
+						case IDCANCEL:
+							return true;
+							break;
+					}
+					return false;
+				}
+				if(this->Setts[6]=="")
+				{
+					switch(MessageBox(this->Settingwnd,"CPU Type CANNOT be blank.\n'i386' is Default.\nPress OK to fix, CANCEL to lose changes.","Settings",MB_OKCANCEL | MB_ICONHAND | MB_TASKMODAL))
+					{
+						case IDOK:
+							return false;
+							break;
+						case IDCANCEL:
+							return true;
+							break;
+					}
 					return false;
 				}
 				
@@ -171,6 +195,7 @@ class SettingDlg
 							Conf.Resume=atoi(this->Setts[3]);
 							Conf.Delay=atoi(this->Setts[4]);
 							Conf.Name=this->Setts[5];
+							Conf.Arch=this->Setts[6];
 							if(!Conf.Save())
 							{
 								MessageBox(NULL,"Failed to save to Config.cfg\nYou may not have permission to write to that directory.","Error: Main.DLL",MB_OK);

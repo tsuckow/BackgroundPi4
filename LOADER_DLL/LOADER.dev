@@ -1,7 +1,7 @@
 [Project]
 FileName=LOADER.dev
 Name=LOADER
-UnitCount=2
+UnitCount=4
 Type=3
 Ver=1
 ObjFiles=
@@ -66,4 +66,24 @@ OriginalFilename=Loader.DLL
 ProductName=Background Pi Client
 ProductVersion=4
 AutoIncBuildNr=0
+
+[Unit3]
+FileName=..\dvar.hpp
+CompileCpp=1
+Folder=LOADER
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit4]
+FileName=..\dvar.cpp
+CompileCpp=1
+Folder=LOADER
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
 

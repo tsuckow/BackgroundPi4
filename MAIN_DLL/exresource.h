@@ -13,6 +13,7 @@
 #define IDD_SPLASH				1000
 
 //Settings
+#define IDC_ARCH				206
 #define IDC_NAME				205
 #define IDC_DELA				204
 #define IDC_RESU				203

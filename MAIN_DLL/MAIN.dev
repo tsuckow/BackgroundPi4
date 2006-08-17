@@ -12,7 +12,7 @@ ResourceIncludes=
 MakeIncludes=
 Compiler=-DBUILDING_DLL=1_@@_
 CppCompiler=-DBUILDING_DLL=1_@@_
-Linker=--no-export-all-symbols --add-stdcall-alias_@@_-lws2_32_@@_-lgmp_@@_
+Linker=--no-export-all-symbols --add-stdcall-alias_@@_-lws2_32_@@_libgmp.dll.a_@@_
 IsCpp=1
 Icon=MAIN.ico
 ExeOutput=../
@@ -128,17 +128,17 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit9]
-FileName=windowmessages.cpp
+FileName=..\Resume.cfg
 CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1001
+Folder=MAIN
+Compile=0
+Link=0
+Priority=1000
 OverrideBuildCmd=0
-BuildCmd=$(CPP) -c windowmessages.cpp -o windowmessages.o $(CXXFLAGS)
+BuildCmd=
 
 [Unit10]
-FileName=..\Resume.cfg
+FileName=..\Current.cfg
 Folder=MAIN
 Compile=0
 Link=0
@@ -147,11 +147,12 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit11]
-FileName=..\Current.cfg
-Folder=MAIN
-Compile=0
-Link=0
-Priority=1000
+FileName=windowmessages.cpp
+Folder=
+Compile=1
+Link=1
+Priority=1001
 OverrideBuildCmd=0
-BuildCmd=
+BuildCmd=$(CPP) -c windowmessages.cpp -o windowmessages.o $(CXXFLAGS)
+CompileCpp=1
 

@@ -1,6 +1,6 @@
 [Editor_1]
-CursorCol=32
-CursorRow=14
+CursorCol=18
+CursorRow=11
 TopLine=1
 LeftChar=1
 Open=1
@@ -11,7 +11,13 @@ Order=0,1
 [Editor_0]
 Open=1
 Top=1
-CursorCol=22
-CursorRow=20
-TopLine=6
+CursorCol=3
+CursorRow=127
+TopLine=102
 LeftChar=1
+[Editor_2]
+Open=0
+Top=0
+[Editor_3]
+Open=0
+Top=0

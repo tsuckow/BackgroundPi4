@@ -28,6 +28,61 @@ bool Windowlessquit = false;
 typedef bool (WINAPI * winVerifyf)(HINSTANCE);
 winVerifyf UP2DATEVerify;
 
+/*
+//GMP
+__gmpz_add_ui			mpz_add_ui;
+__gmpz_cmp				mpz_cmp;
+__gmpz_mod				mpz_mod;
+__gmpz_init				mpz_init;
+__gmpz_set_ui			mpz_set_ui;
+
+__gmpz_set_si			mpz_set_si;
+__gmpz_remove			mpz_remove;
+__gmpz_addmul_ui		mpz_addmul_ui;
+__gmpz_clear			mpz_clear;
+__gmpz_divisible_ui_p	mpz_divisible_ui_p;
+__gmpz_sqrt				mpz_sqrt;
+__gmpz_divisible_p		mpz_divisible_p;
+__gmpz_set				mpz_set;
+__gmpz_nextprime		mpz_nextprime;
+__gmpz_probab_prime_p	mpz_probab_prime_p;
+__gmpf_set_d			mpf_set_d;
+__gmpf_init_set_d		mpf_init_set_d;
+__gmpf_sub				mpf_sub;
+__gmpf_set_z			mpf_set_z;
+__gmpf_div				mpf_div;
+__gmpf_clear			mpf_clear;
+__gmpf_init				mpf_init;
+__gmpz_get_d			mpz_get_d;
+__gmpz_sub				mpz_sub;
+__gmpz_mul				mpz_mul;
+__gmpz_set_d			mpz_set_d;
+__gmpz_set_str			mpz_set_str;
+
+__gmpf_mul_ui			mpf_mul_ui;
+__gmpz_init_set			mpz_init_set;
+__gmpz_tdiv_qr_ui		mpz_tdiv_qr_ui;
+__gmpf_init_set			mpf_init_set;
+__gmpf_cmp_ui			mpf_cmp_ui;
+__gmpf_set_ui			mpf_set_ui;
+__gmpf_ui_sub			mpf_ui_sub;
+__gmpf_cmp				mpf_cmp;
+__gmpf_mul				mpf_mul;
+__gmpz_set_f			mpz_set_f;
+__gmpz_get_str			mpz_get_str;
+__gmpz_mul_ui			mpz_mul_ui;
+__gmpz_init_set_ui		mpz_init_set_ui;
+__gmpf_get_d			mpf_get_d;
+__gmpz_cmp_ui			_mpz_cmp_ui; //yes, leave the _
+__gmpz_add				mpz_add;
+__gmpz_sub_ui			mpz_sub_ui;
+__gmpz_powm				mpz_powm;
+__gmpz_ui_pow_ui		mpz_ui_pow_ui;
+__gmpz_tdiv_q			mpz_tdiv_q;
+__gmpz_invert			mpz_invert;
+__gmpz_tdiv_q_ui		mpz_tdiv_q_ui;
+*/
+
 //Tray Icon
 TrayIcon::TrayIcon(HINSTANCE instance)
 {
@@ -63,7 +118,6 @@ void DIVN(mpz_t & t,const mpz_t & a,mpz_t & v,const int & vinc,mpz_t & kq,const 
 	if (mpz_cmp(kq,a) >= 0)
 	{
         mpz_mod(kq,kq,a);
-
         if (mpz_cmp_ui(kq,0) == 0)
 		{
 			mpz_t temp;
@@ -108,6 +162,7 @@ void next_prime(mpz_t & r,const mpz_t & n,const mpz_t & N)
    mpz_set(r,n);
    do{
       mpz_nextprime (r,r);
+      //Do we need to do this or is just checking better?
       probab = mpz_probab_prime_p(r,7);//# Iterations, 7 is good
    } while( !( (probab==1)?is_prime(r):probab ) && mpz_cmp(r,N) <= 0 ); //WARNING: Terinary Operator Use! Read /w care.
    //added: detects that n is higher than N and returns
@@ -276,23 +331,25 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
   mpz_mul_ui (N3, N, 3);
   mpz_set_ui(sum,0);
   mpz_init_set_ui(a,2);
+	Stat.Update(6,"Loading Resume Data...");
 
-  //LOAD RESUME DATA
+  	//LOAD RESUME DATA
 	{
 		std::fstream resume;
 		resume.open ("Resume.cfg", std::fstream::in | std::ios::out);
 		if(resume.is_open())
 		{
-			double tempd;
-			resume >> tempd;
-			mpz_set_d(temp,tempd);
+			char tmpstr[255];
+			resume.getline(tmpstr,255);
+			mpz_set_str(temp,tmpstr,10);
+			
   			if(mpz_cmp(temp,n) == 0 && !(resume.eof()))
   			{
-      			resume >> tempd;
-      			mpz_set_d(a,tempd);
-      			char counterstr[255];
-      			resume >> counterstr;
-      			mpz_set_str(sum,counterstr,10);
+      			resume.getline(tmpstr,255);
+      			mpz_set_str(a,tmpstr,10);
+      			
+      			resume.getline(tmpstr,255);
+      			mpz_set_str(sum,tmpstr,10);
 				next_prime(a,a,N3);
   			}  
   			else
@@ -316,7 +373,7 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
         	ExitThread(0);
 		}       
 	}
-  percentc(ps,a,N3);
+  	percentc(ps,a,N3);
 	time(&time_start);
 	time(&time_resume);
 	timeb Start;//TIME TAKEN
@@ -331,7 +388,7 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
     	mpz_get_str(statstr,10,temp);
     	Stat.Update(1,statstr);
 	}
-	
+
   for(;mpz_cmp(a,N3) <= 0;next_prime(a,a,N3))
   {
     
@@ -362,7 +419,7 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
     	Stat.Update(2,statstr);
 	}
 	//Done
-    
+
     mpf_set_d(tempf, log( mpz_get_d(N3) ) );
     mpf_set_d(tempf2, log( mpz_get_d(a) ) );
     mpf_div(tempf,tempf,tempf2);
@@ -391,11 +448,12 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
         mpz_powm(num,temp,n,av);
         mpz_set_ui(v,0);
     }
-    
+
     /*Beginning of slow code...*/
-    for(mpz_set_ui(k,1) ; mpz_cmp(k,N) <= 0 ; mpz_add_ui(k,k,1))
+    
+	
+	for(mpz_set_ui(k,1) ; mpz_cmp(k,N) <= 0 ; mpz_add_ui(k,k,1))
     {
-		
         mpz_mul_ui(temp,k,2);
         mpz_set(t,temp);
         DIVN(t,a,v,-1,kq1,2);
@@ -419,15 +477,22 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
         mpz_sub_ui(t,t,2);
         DIVN(t,a,v,1,kq4,3);
 
+		
         if (mpz_cmp_ui(a,2) != 0)
+        {
             mpz_mul_ui(t,t,2);
-        else
-            mpz_add_ui(v,v,1);
-        mpz_mul(den,den,t);
+		}
+		else
+        {
+			
+		    mpz_add_ui(v,v,1);
+		}
+		mpz_mul(den,den,t);
         mpz_mod(den,den,av);
         
         if (mpz_cmp_ui(v,0) > 0)
         {
+			
             mpz_invert(t,den,av);
 	        mpz_mul(t,t,num);
             mpz_mod(t,t,av);
@@ -451,7 +516,7 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
     
 	}
 	/*...End of slow code*/
-
+	
     mpz_set_ui(temp,5);
     //mpz_set(temp2,n);
     mpz_sub_ui(temp2,n,1);
@@ -465,7 +530,6 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
     mpz_mul(temp,temp,s);
     mpz_tdiv_q(temp,temp,av);
     mpz_add(sum,sum,temp);
-    
     //RESUME SAVE
     if(time(NULL)-time_resume >= Conf.Resume && Conf.Resume != 0)
     {
@@ -920,6 +984,7 @@ DWORD WINAPI StatsListen(void*)
         closesocket(AcceptSocket);
 
     }
+    closesocket(m_socket);
 }
 
 DWORD WINAPI MainThread(void*)
@@ -1058,7 +1123,80 @@ bool APIENTRY Main(int nFunsterStil,HINSTANCE instance)
 		Splashwnd = CreateDialog(thisinstance,MAKEINTRESOURCE(IDD_SPLASH),Inviswnd,(DLGPROC)SplashDialogProcedure);
 		ShowWindow (Splashwnd, SW_SHOW);
     }
+	/*
+	HINSTANCE hLib=NULL;
+    hLib=LoadLibrary("libgmp-3.DLL");
+	if(hLib==NULL)
+	{
+		MessageBox(NULL,"Failed To Load \"libgmp-3.DLL\"","ERROR: MAIN.DLL",MB_OK);
+		doExit = false;
+		Windowlessquit = true;
+		PostMessage(Inviswnd,WM_RQUIT,0,0);
+        ExitThread(0);
+	}
 	
+	mpz_add				=(__gmpz_add)		GetProcAddress((HMODULE)hLib,"__gmpz_add");
+	mpz_add_ui			=(__gmpz_add_ui)	GetProcAddress((HMODULE)hLib,"__gmpz_add_ui");
+	mpz_addmul_ui		=(__gmpz_addmul_ui)	GetProcAddress((HMODULE)hLib,"__gmpz_addmul_ui");
+	mpz_clear			=(__gmpz_clear)		GetProcAddress((HMODULE)hLib,"__gmpz_clear");
+	mpz_cmp				=(__gmpz_cmp)		GetProcAddress((HMODULE)hLib,"__gmpz_cmp");
+	_mpz_cmp_ui			=(__gmpz_cmp_ui)	GetProcAddress((HMODULE)hLib,"__gmpz_cmp_ui");
+	mpz_divisible_p		=(__gmpz_divisible_p)GetProcAddress((HMODULE)hLib,"__gmpz_divisible_p");
+	mpz_divisible_ui_p	=(__gmpz_divisible_ui_p)GetProcAddress((HMODULE)hLib,"__gmpz_divisible_ui_p");
+	mpz_get_d			=(__gmpz_get_d)		GetProcAddress((HMODULE)hLib,"__gmpz_get_d");
+	mpz_get_str			=(__gmpz_get_str)	GetProcAddress((HMODULE)hLib,"__gmpz_get_str");
+	mpz_init			=(__gmpz_init)		GetProcAddress((HMODULE)hLib,"__gmpz_init");
+	mpz_init_set		=(__gmpz_init_set)	GetProcAddress((HMODULE)hLib,"__gmpz_init_set");
+	mpz_init_set_ui		=(__gmpz_init_set_ui)GetProcAddress((HMODULE)hLib,"__gmpz_init_set_ui");
+	mpz_invert			=(__gmpz_invert)	GetProcAddress((HMODULE)hLib,"__gmpz_invert");
+	mpz_mod				=(__gmpz_mod)		GetProcAddress((HMODULE)hLib,"__gmpz_mod");
+	mpz_mul				=(__gmpz_mul)		GetProcAddress((HMODULE)hLib,"__gmpz_mul");
+	mpz_mul_ui			=(__gmpz_mul_ui)	GetProcAddress((HMODULE)hLib,"__gmpz_mul_ui");
+	mpz_nextprime		=(__gmpz_nextprime)	GetProcAddress((HMODULE)hLib,"__gmpz_nextprime");
+	mpz_powm			=(__gmpz_powm)		GetProcAddress((HMODULE)hLib,"__gmpz_powm");
+	mpz_probab_prime_p	=(__gmpz_probab_prime_p)GetProcAddress((HMODULE)hLib,"__gmpz_probab_prime_p");
+	mpz_remove			=(__gmpz_remove)	GetProcAddress((HMODULE)hLib,"__gmpz_remove");
+	mpz_set				=(__gmpz_set)		GetProcAddress((HMODULE)hLib,"__gmpz_set");
+	mpz_set_d			=(__gmpz_set_d)		GetProcAddress((HMODULE)hLib,"__gmpz_set_d");
+	mpz_set_f			=(__gmpz_set_f)		GetProcAddress((HMODULE)hLib,"__gmpz_set_f");
+	mpz_set_si			=(__gmpz_set_si)	GetProcAddress((HMODULE)hLib,"__gmpz_set_si");
+	mpz_set_str			=(__gmpz_set_str)	GetProcAddress((HMODULE)hLib,"__gmpz_set_str");
+	mpz_set_ui			=(__gmpz_set_ui)	GetProcAddress((HMODULE)hLib,"__gmpz_set_ui");
+	mpz_sqrt			=(__gmpz_sqrt)		GetProcAddress((HMODULE)hLib,"__gmpz_sqrt");
+	mpz_sub				=(__gmpz_sub)		GetProcAddress((HMODULE)hLib,"__gmpz_sub");
+	mpz_sub_ui			=(__gmpz_sub_ui)	GetProcAddress((HMODULE)hLib,"__gmpz_sub_ui");
+	mpz_tdiv_q			=(__gmpz_tdiv_q)	GetProcAddress((HMODULE)hLib,"__gmpz_tdiv_q");
+	mpz_tdiv_q_ui		=(__gmpz_tdiv_q_ui)	GetProcAddress((HMODULE)hLib,"__gmpz_tdiv_q_ui");
+	mpz_tdiv_qr_ui		=(__gmpz_tdiv_qr_ui)GetProcAddress((HMODULE)hLib,"__gmpz_tdiv_qr_ui");
+	mpz_ui_pow_ui		=(__gmpz_ui_pow_ui)	GetProcAddress((HMODULE)hLib,"__gmpz_ui_pow_ui");	
+	
+	mpf_clear			=(__gmpf_clear)		GetProcAddress((HMODULE)hLib,"__gmpf_clear");
+	mpf_cmp				=(__gmpf_cmp)		GetProcAddress((HMODULE)hLib,"__gmpf_cmp");
+	mpf_cmp_ui			=(__gmpf_cmp_ui)	GetProcAddress((HMODULE)hLib,"__gmpf_cmp_ui");
+	mpf_div				=(__gmpf_div)		GetProcAddress((HMODULE)hLib,"__gmpf_div");
+	mpf_get_d			=(__gmpf_get_d)		GetProcAddress((HMODULE)hLib,"__gmpf_get_d");
+	mpf_init			=(__gmpf_init)		GetProcAddress((HMODULE)hLib,"__gmpf_init");
+	mpf_init_set		=(__gmpf_init_set)	GetProcAddress((HMODULE)hLib,"__gmpf_init_set");
+	mpf_init_set_d		=(__gmpf_init_set_d)GetProcAddress((HMODULE)hLib,"__gmpf_init_set_d");
+	mpf_mul				=(__gmpf_mul)		GetProcAddress((HMODULE)hLib,"__gmpf_mul");
+	mpf_mul_ui			=(__gmpf_mul_ui)	GetProcAddress((HMODULE)hLib,"__gmpf_mul_ui");
+	mpf_set_d			=(__gmpf_set_d)		GetProcAddress((HMODULE)hLib,"__gmpf_set_d");
+	mpf_set_ui			=(__gmpf_set_ui)	GetProcAddress((HMODULE)hLib,"__gmpf_set_ui");
+	mpf_set_z			=(__gmpf_set_z)		GetProcAddress((HMODULE)hLib,"__gmpf_set_z");
+	mpf_sub				=(__gmpf_sub)		GetProcAddress((HMODULE)hLib,"__gmpf_sub");
+	mpf_ui_sub			=(__gmpf_ui_sub)	GetProcAddress((HMODULE)hLib,"__gmpf_ui_sub");	
+	
+	/*
+	if(mpz_set_ui==NULL)
+	{
+		FreeLibrary(hLib);
+		MessageBox(NULL,"Failed To Bind \"gmp\"","ERROR: MAIN.DLL",MB_OK);
+		doExit = false;
+		Windowlessquit = true;
+		PostMessage(Inviswnd,WM_RQUIT,0,0);
+        ExitThread(0);
+	}
+	*/
 	thread = CreateThread(NULL,0,MainThread,NULL,0,NULL); //Returns handle to thread, may be useful...
 	
 	if(IsWindow(Inviswnd))

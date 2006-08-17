@@ -8,6 +8,8 @@
 #ifndef _BPC_LOADER_DLL_H_
 #define _BPC_LOADER_DLL_H_
 #include <windows.h>
+#include <fstream>
+#include "../dvar.hpp"
 
 # define DLLIMPORT extern "C" __declspec(dllexport)
 

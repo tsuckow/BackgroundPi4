@@ -16,6 +16,7 @@ Config::Config()
 	#define DCResume	10
 	#define DCDelay		0
 	#define DCStats		false
+	#define DCArch		"i386"
 	
 	//Defaults
 	this->Name = (DString)"Guest" + (DString)time(NULL) + (DString)rand();
@@ -25,6 +26,7 @@ Config::Config()
 	this->Resume = DCResume;	
 	this->Delay = DCDelay;
 	this->Stats = DCStats;
+	this->Arch = DCArch;
 }
 
 bool ParseLine(DString Line, DString & Item, DString & Value)
@@ -58,6 +60,10 @@ bool Config::Open() //return false on fail
 			if(ParseLine(Buffer,Item,Value))
 			{
 				//Config If's
+				if(Item=="CPUArch")
+				{
+					this->Arch=Value;
+				}
 				if(Item=="Host")
 				{
 					this->Host=Value;
@@ -114,6 +120,7 @@ bool Config::Save()
 		if( this->Timeout != DCTimeout )	hFile << "Timeout=" << this->Timeout << std::endl;
 		if( this->Resume != DCResume )		hFile << "Resume=" << this->Resume << std::endl;		
 		if( this->Delay != DCDelay )		hFile << "Delay=" << this->Delay << std::endl;
+		if( this->Arch != DCArch )			hFile << "CPUArch=" << this->Arch << std::endl;
 		if( this->Stats != DCStats )		hFile << "Stats=" << this->Stats << std::endl;
 		return true;
 	}

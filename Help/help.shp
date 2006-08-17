@@ -1,6 +1,6 @@
 ##v##00.4.50
 pagenumber=2
-linenumber=268
+linenumber=282
 sellength=0
 topline=0
 EditHelpFileTitle.Text=Background Pi Help
@@ -192,6 +192,10 @@ This program is distributed under the GNU General Public License
 <color=7>v4 Alpha</color>
 
 <color=7>v4 Pre-Alpha</color>
+<color=10b>08-16-2006</color>
+	<color=4>Add:</color> Processor Selection for improved performance (i386 is default)
+	<color=4>Change:</color> Worked on icon some
+
 <color=10b>08-13-2006</color>
 	<color=4>Add:</color> Check for updates before communicating
 	<color=4>Update:</color> Migrated BackPi v4 completely to new server
@@ -234,8 +238,7 @@ This program is distributed under the GNU General Public License
 <c><bullet.bmp> <bullet.bmp> <bullet.bmp> <jump=SHM_contents0004>Future Changes</jump> <bullet.bmp> <bullet.bmp> <bullet.bmp></c>
 ----- SHM ---- page 3 ---- 
 <color=4b>Possible Features of v4</color>
-	<color=4>Add:</color> Proccessor selection for GMP, default being generic
-	<color=4>Add:</color> Username/Groupname, tracking of who helped with what
+	<color=4>Change:</color> Improve
 
 <c><bullet.bmp> <bullet.bmp> <bullet.bmp> <jump=SHM_contents0003>Change Log</jump> <bullet.bmp> <bullet.bmp> <bullet.bmp></c>
 	
