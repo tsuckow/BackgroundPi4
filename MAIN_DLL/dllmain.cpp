@@ -1024,6 +1024,7 @@ DWORD WINAPI MainThread(void*)
     	}
 	}
 	
+	Sleep(1000);
 	ShowWindow (Splashwnd, SW_HIDE);
     
     while(true)
