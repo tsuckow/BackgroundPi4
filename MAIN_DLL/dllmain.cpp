@@ -100,16 +100,24 @@ TrayIcon::~TrayIcon()
 void TrayIcon::Add()
 {
 	lstrcpyn(tnd.szTip, (LPCTSTR)tiptext, sizeof(tnd.szTip));
-	tnd.uFlags = NIF_ICON | NIF_TIP|NIF_MESSAGE;
-	tnd.uID =(UINT)IDI_WINLOGO;
-    tnd.cbSize = sizeof(NOTIFYICONDATA);
-    tnd.hWnd = Inviswnd;
-    tnd.uCallbackMessage = WM_NOTIFYICON;
-    tnd.hIcon = LoadIcon(iconinstance,"A");
-    Shell_NotifyIcon(NIM_ADD, &tnd);
+	this->tnd.uFlags = NIF_ICON | NIF_TIP|NIF_MESSAGE;
+	this->tnd.uID =(UINT)IDI_WINLOGO;
+    this->tnd.cbSize = sizeof(NOTIFYICONDATA);
+    this->tnd.hWnd = Inviswnd;
+    this->tnd.uCallbackMessage = WM_NOTIFYICON;
+    this->tnd.hIcon = LoadIcon(iconinstance,"B");
+    Shell_NotifyIcon(NIM_ADD, &this->tnd);
 }
+
+void TrayIcon::Update(char Ico)
+{
+	this->tnd.hIcon = LoadIcon(iconinstance,(DString)Ico);
+	Shell_NotifyIcon(NIM_MODIFY, &this->tnd);
+}
+
 void TrayIcon::Remove()
 {
+	tnd.uFlags = 0;
     Shell_NotifyIcon(NIM_DELETE, &tnd);
 }
 
@@ -1026,10 +1034,9 @@ DWORD WINAPI MainThread(void*)
 	
 	Sleep(1000);
 	ShowWindow (Splashwnd, SW_HIDE);
-    
+    PostMessage(Splashwnd,WM_CLOSE,0,0);
     while(true)
     {
-		PostMessage(Splashwnd,WM_CLOSE,0,0);
     	
 		//Make it divis by 9
 		mpz_tdiv_q_ui(counter,counter,9);
@@ -1056,9 +1063,9 @@ DWORD WINAPI MainThread(void*)
         	mpz_get_str(counterstr,10,counter);
         	Stat.Update(0,counterstr);
 		}
-		
+		hGlobalIcon->Update('A');//Pi
         DoCalc(counter,sum);
-        
+        hGlobalIcon->Update('C');//Comm
         Stat.Reset();
         Stat.Update(6,"Preparing Comm...");
         
@@ -1073,8 +1080,9 @@ DWORD WINAPI MainThread(void*)
         while(DoComm(counter,sum))
         {
 			Sleep(1);
+			hGlobalIcon->Update('C');//Reset Comm from Comm Error
 		}
-        
+        hGlobalIcon->Update('B');//Loading
         Stat.Reset();
         Stat.Update(6,"Saving Range...");
         

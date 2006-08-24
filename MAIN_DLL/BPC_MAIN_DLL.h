@@ -255,6 +255,7 @@ class TrayIcon
 		TrayIcon(HINSTANCE);
 		~TrayIcon();
 		void Add();
+		void Update(char);
 		void Remove();
 	private:
 		NOTIFYICONDATA tnd;

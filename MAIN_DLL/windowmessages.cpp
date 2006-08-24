@@ -13,13 +13,10 @@ LRESULT CALLBACK InvisDialogProcedure (HWND hwnd, UINT message, WPARAM wParam, L
 	static UINT s_uTaskbarRestart;
     switch (message)                  /* handle the messages */
     {
-		case WM_CREATE: 
-        	s_uTaskbarRestart = RegisterWindowMessage(TEXT("TaskbarCreated")); 
-        	break;
         case WM_INITDIALOG:
             SetClassLong(hwnd,GCL_HICON,(long) LoadIcon(thisinstance,"A"));
             SetClassLong(hwnd,GCL_HICONSM,(long) LoadIcon(thisinstance,"A"));
-            //thread = CreateThread(NULL,0,MainThread,NULL,0,NULL); //Returns handle to thread, may be useful...
+            s_uTaskbarRestart = RegisterWindowMessage(TEXT("TaskbarCreated"));
             return false;
             break;
         case WM_NOTIFYICON:
