@@ -1,6 +1,6 @@
 ##v##00.4.50
-pagenumber=5
-linenumber=0
+pagenumber=2
+linenumber=102
 sellength=0
 topline=0
 EditHelpFileTitle.Text=Background Pi Help
@@ -190,12 +190,17 @@ This program is distributed under the GNU General Public License
 <color=7>v4 Beta</color>
 
 <color=7>v4 Alpha</color>
+<color=10b>08-26-2006</color>
+	<color=4>Add:</color> Dropdown Menu for CPU Types
 
-<color=7>v4 Pre-Alpha</color>
+<color=10b>08-25-2006</color>
+	<color=4>Fix:</color> There were some compatibility issues with Windows 98 and earlier
+
 <color=10b>08-24-2006</color>
 	<color=4>Add:</color> Notification Tray Icon is recreated after explorer crashes on supporting systems.
 	<color=4>Add:</color> Multiple Tray Icons
 
+<color=7>v4 Pre-Alpha</color>
 <color=10b>08-17-2006</color>
 	<color=4>Add:</color> About Dialog
 	<color=4>Change:</color> New Splash Screens
@@ -246,7 +251,7 @@ This program is distributed under the GNU General Public License
 <c><bullet.bmp> <bullet.bmp> <bullet.bmp> <jump=SHM_contents0004>Future Changes</jump> <bullet.bmp> <bullet.bmp> <bullet.bmp></c>
 ----- SHM ---- page 3 ---- 
 <color=4b>Possible Features of v4</color>
-	<color=4>Change:</color> Improve
+	<color=4>Add:</color> Get your stats from web
 
 <c><bullet.bmp> <bullet.bmp> <bullet.bmp> <jump=SHM_contents0003>Change Log</jump> <bullet.bmp> <bullet.bmp> <bullet.bmp></c>
 	

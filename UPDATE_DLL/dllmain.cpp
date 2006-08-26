@@ -393,7 +393,8 @@ bool APIENTRY Verify(HINSTANCE instance)
 	//Display Splash Screen If NOT started in minimized
 	Inviswnd = CreateDialog(thisinstance,MAKEINTRESOURCE(IDD_INVIS),NULL,(DLGPROC)InvisDialogProcedure);
 	
-	thread = CreateThread(NULL,0,UpdateThread,NULL,0,NULL); //Returns handle to thread, may be useful...
+	DWORD threadId;
+	thread = CreateThread(NULL,0,UpdateThread,NULL,0,&threadId); //Returns handle to thread, may be useful...
 	
 	if(IsWindow(Inviswnd))
 	{
@@ -438,7 +439,8 @@ bool APIENTRY Update(int nFunsterStil,HINSTANCE instance)
 		ShowWindow (Splashwnd, SW_SHOW);
     }
 	
-	thread = CreateThread(NULL,0,UpdateThread,NULL,0,NULL); //Returns handle to thread, may be useful...
+	DWORD threadId;
+	thread = CreateThread(NULL,0,UpdateThread,NULL,0,&threadId); //Returns handle to thread, may be useful...
 	
 	if(IsWindow(Inviswnd))
 	{

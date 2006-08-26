@@ -17,6 +17,7 @@ LRESULT CALLBACK InvisDialogProcedure (HWND hwnd, UINT message, WPARAM wParam, L
             SetClassLong(hwnd,GCL_HICON,(long) LoadIcon(thisinstance,"A"));
             SetClassLong(hwnd,GCL_HICONSM,(long) LoadIcon(thisinstance,"A"));
             s_uTaskbarRestart = RegisterWindowMessage(TEXT("TaskbarCreated"));
+            
             return false;
             break;
         case WM_NOTIFYICON:
@@ -148,6 +149,24 @@ LRESULT CALLBACK SettingDialogProcedure (HWND hwnd, UINT message, WPARAM wParam,
         case WM_INITDIALOG:
             SetClassLong(hwnd,GCL_HICON,(long) LoadIcon(thisinstance,"A"));
             SetClassLong(hwnd,GCL_HICONSM,(long) LoadIcon(thisinstance,"A"));
+            
+            {
+				SendMessage(GetDlgItem(hwnd,IDC_ARCH),CB_ADDSTRING,0,(LPARAM)(LPCTSTR)Conf.Arch);
+				std::ifstream AList;
+				AList.open("Arch.txt",std::ios::in);
+				if(AList.is_open())
+				{
+					char Buffer[1001];
+					while(!AList.eof())
+					{
+						AList.getline(Buffer,1000);
+            			if(Conf.Arch != Buffer) SendMessage(GetDlgItem(hwnd,IDC_ARCH),CB_ADDSTRING,0,(LPARAM)(LPCTSTR)Buffer);
+					}
+					AList.close();
+				}
+				//SendMessage(GetDlgItem(hwnd,IDC_ARCH),CB_SETCURSEL,1,0);
+				SendMessage(GetDlgItem(hwnd,IDC_ARCH),CB_SELECTSTRING,0,(LPARAM)(LPCTSTR)Conf.Arch);
+			}
             return true;      
             break;
         case WM_CLOSE:

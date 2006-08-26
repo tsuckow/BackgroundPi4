@@ -61,6 +61,7 @@ bool ConfigOpen() //return false on fail
 	}
 	hFile.close();
 	MessageBox(NULL,"Oh Shit.\nConfigOpen","Error: Loader.DLL",MB_OK);
+	return false;
 }
 
 bool FileMove(DString Src, DString Dst)
@@ -72,7 +73,12 @@ bool FileMove(DString Src, DString Dst)
 	in.open(Src,std::ios::in | std::ios::binary);
 	out.open(Dst,std::ios::out | std::ios::binary);
 	
-	if( !(in.is_open() && out.is_open()) ) return false;
+	if( !(in.is_open() && out.is_open()) )
+	{
+		in.close();
+		out.close();
+		return false;
+	}
 	
 	char buffer[1024];
 	while(!in.eof())
@@ -89,10 +95,10 @@ bool FileMove(DString Src, DString Dst)
 
 bool APIENTRY Load(bool Update_Updater, int nFunsterStil,HINSTANCE thisinstance)
 {
+	HINSTANCE hLib=NULL;
 	if(Update_Updater==true)
 	{
-        HINSTANCE hLib=NULL;
-        hLib=LoadLibrary("UPDATER.DLL");
+        hLib=LoadLibrary("UPDATER.dll");
 		if(hLib==NULL)
 		{
 			MessageBox(NULL,"Failed To Load \"UPDATER.DLL\"","ERROR: LOADER.DLL",MB_OK);
@@ -127,13 +133,14 @@ bool APIENTRY Load(bool Update_Updater, int nFunsterStil,HINSTANCE thisinstance)
 		
 		//Done.		
 		
-        HINSTANCE hLib=NULL;
-        hLib=LoadLibrary("MAIN.DLL");
+        hLib=LoadLibrary("MAIN.dll");
+
 		if(hLib==NULL)
 		{
 			MessageBox(NULL,"Failed To Load \"MAIN.DLL\"","ERROR: LOADER.DLL",MB_OK);
 			return true;
 		}
+		
 		Main=(winMainf)GetProcAddress((HMODULE)hLib,"Main");
 		if(Main==NULL)
 		{
@@ -142,6 +149,7 @@ bool APIENTRY Load(bool Update_Updater, int nFunsterStil,HINSTANCE thisinstance)
 			return true;
 		}
 		bool Temp = true;
+		
 		Temp=Main(nFunsterStil,hLib);
 		FreeLibrary(hLib);
 		Main=NULL;
