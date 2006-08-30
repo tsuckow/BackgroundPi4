@@ -7,7 +7,6 @@
  * Module: Main.DLL      * 
  *                       * 
  * * * * * * * * * * * * */
-#define PI_COM_VERSION 2
  
 #include <windows.h>
 #include <sys/timeb.h>

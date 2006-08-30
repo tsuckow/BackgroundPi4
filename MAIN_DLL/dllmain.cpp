@@ -33,7 +33,7 @@ winVerifyf UP2DATEVerify;
 TrayIcon::TrayIcon(HINSTANCE instance)
 {
 	iconinstance=instance;
-	tiptext = "";
+	tiptext = "Background Pi v4";
 	Add();
 }
 
