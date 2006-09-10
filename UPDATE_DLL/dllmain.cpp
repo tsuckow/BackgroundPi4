@@ -151,7 +151,7 @@ DWORD WINAPI UpdateThread(void*)
     if ( connect( m_socket, (SOCKADDR*) &clientService, sizeof(clientService) ) == SOCKET_ERROR)
     {
         WSACleanup();
-        MessageBox(NULL,"Background Pi Client FAILED to connect to the server.\nTry verifing settings.","Winsock",MB_OK);
+        if(!Verifying) MessageBox(NULL,"Background Pi Client FAILED to connect to the server.\nTry verifing settings.","Winsock",MB_OK);
 		Windowlessquit = true;
 		PostMessage(Inviswnd,WM_RQUIT,0,0);
         ExitThread(0);

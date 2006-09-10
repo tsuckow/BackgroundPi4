@@ -30,6 +30,7 @@
 #define SUM_PREC 50
 
 extern bool doExit;
+extern bool Windowlessquit;
 extern HWND Inviswnd;
 extern HWND Splashwnd;
 extern HWND Aboutwnd;
@@ -144,6 +145,7 @@ class SettingDlg
 		bool Close()
 			{
 				bool changed = false;
+				bool restart = false;
 				for(unsigned short i = 0;i<=SettingDlgMax;i++)
                 {
 					char buffer[998];
@@ -157,7 +159,7 @@ class SettingDlg
 				if(this->Setts[3]!=(DString)Conf.Resume) changed = true;
 				if(this->Setts[4]!=(DString)Conf.Delay) changed = true;
 				if(this->Setts[5]!=(DString)Conf.Name) changed = true;
-				if(this->Setts[6]!=(DString)Conf.Arch) changed = true;
+				if(this->Setts[6]!=(DString)Conf.Arch) {changed = true;restart = true;}
 				
 				if(this->Setts[5]=="")
 				{
@@ -201,6 +203,14 @@ class SettingDlg
 							if(!Conf.Save())
 							{
 								MessageBox(NULL,"Failed to save to Config.cfg\nYou may not have permission to write to that directory.","Error: Main.DLL",MB_OK);
+								return true;
+							}
+							if(restart)
+							{
+								doExit = false;
+								Windowlessquit = true;
+								PostMessage(Inviswnd,WM_RQUIT,0,0);
+								return false;
 							}
 						case IDNO:
 							return true;

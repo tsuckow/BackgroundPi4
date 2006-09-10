@@ -1,3 +1,7 @@
 i386
 i686
 Athlon
+Pentium
+Pentium2
+Pentium3
+Pentium4

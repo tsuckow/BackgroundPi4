@@ -17,6 +17,7 @@ HWND Splashwnd = NULL;
 HWND Aboutwnd = NULL;
 SettingDlg Sett;
 HANDLE thread = NULL;
+SOCKET stat_socket = (SOCKET)NULL;
 
 HANDLE statthread = NULL;
 
@@ -345,7 +346,7 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
 
   for(;mpz_cmp(a,N3) <= 0;next_prime(a,a,N3))
   {
-    
+    if(Windowlessquit) ExitThread(0);
     //Update Status
     
     percentc(tempf,a,N3);
@@ -373,7 +374,7 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
     	Stat.Update(2,statstr);
 	}
 	//Done
-
+	if(Windowlessquit) ExitThread(0);
     mpf_set_d(tempf, log( mpz_get_d(N3) ) );
     mpf_set_d(tempf2, log( mpz_get_d(a) ) );
     mpf_div(tempf,tempf,tempf2);
@@ -402,12 +403,13 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
         mpz_powm(num,temp,n,av);
         mpz_set_ui(v,0);
     }
-
+	if(Windowlessquit) ExitThread(0);
     /*Beginning of slow code...*/
     
 	
 	for(mpz_set_ui(k,1) ; mpz_cmp(k,N) <= 0 ; mpz_add_ui(k,k,1))
     {
+		if(Windowlessquit) ExitThread(0);
         mpz_mul_ui(temp,k,2);
         mpz_set(t,temp);
         DIVN(t,a,v,-1,kq1,2);
@@ -470,7 +472,7 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
     
 	}
 	/*...End of slow code*/
-	
+	if(Windowlessquit) ExitThread(0);
     mpz_set_ui(temp,5);
     //mpz_set(temp2,n);
     mpz_sub_ui(temp2,n,1);
@@ -484,6 +486,7 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
     mpz_mul(temp,temp,s);
     mpz_tdiv_q(temp,temp,av);
     mpz_add(sum,sum,temp);
+    if(Windowlessquit) ExitThread(0);
     //RESUME SAVE
     if(time(NULL)-time_resume >= Conf.Resume && Conf.Resume != 0)
     {
@@ -501,10 +504,10 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
       time(&time_resume);
     }    
     //END RESUME SAVE
-    
+    if(Windowlessquit) ExitThread(0);
     //Give the proccessor a break!
     Sleep(Conf.Delay);
-    
+    if(Windowlessquit) ExitThread(0);    
   }// End Master For Loop
 	  
   //mpz_t av,a,vmax,N,N3,num,den,k,kq1,kq2,kq3,kq4,t,v,s,i,t1,temp,temp2;
@@ -874,10 +877,10 @@ DWORD WINAPI StatsListen(void*)
     }
      
     // Create a socket.
-    SOCKET m_socket;
-    m_socket = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
+    
+    stat_socket = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
 
-    if ( m_socket == INVALID_SOCKET )
+    if ( stat_socket == INVALID_SOCKET )
     {
         WSACleanup();
         MessageBox(NULL,"Failed to initiate socket.","Winsock Error",MB_OK | MB_ICONERROR | MB_APPLMODAL);
@@ -893,11 +896,11 @@ DWORD WINAPI StatsListen(void*)
     service.sin_addr.s_addr = inet_addr( "0.0.0.0" );
     service.sin_port = htons( 31416 );
     
-     if ( bind( m_socket, (SOCKADDR*) &service, sizeof(service) ) == SOCKET_ERROR )
+     if ( bind( stat_socket, (SOCKADDR*) &service, sizeof(service) ) == SOCKET_ERROR )
      {
           WSACleanup();
          //printf( "bind() failed.\n" );
-         closesocket(m_socket);
+         closesocket(stat_socket);
          MessageBox(NULL,"Failed to bind Stats socket.\nPort may already be in use.","Winsock Error",MB_OK | MB_ICONERROR);
          return 0;
     }
@@ -905,7 +908,7 @@ DWORD WINAPI StatsListen(void*)
    
     
     // Listen on the socket.
-    if ( listen( m_socket, 10 ) == SOCKET_ERROR )
+    if ( listen( stat_socket, 10 ) == SOCKET_ERROR )
     {
          WSACleanup();
          //printf( "Error listening on socket.\n");
@@ -922,7 +925,12 @@ DWORD WINAPI StatsListen(void*)
         while ( AcceptSocket == SOCKET_ERROR )
         {
             int size = sizeof(clientaddr);
-            AcceptSocket = accept( m_socket,(struct sockaddr*)&clientaddr,&size);            
+            AcceptSocket = accept( stat_socket,(struct sockaddr*)&clientaddr,&size);      
+			if(Windowlessquit)
+			{
+				closesocket(stat_socket);
+				return 0;
+			}
         }
           
         // Send and receive data
@@ -938,7 +946,7 @@ DWORD WINAPI StatsListen(void*)
         closesocket(AcceptSocket);
 
     }
-    closesocket(m_socket);
+    closesocket(stat_socket);
 }
 
 DWORD WINAPI MainThread(void*)
@@ -1114,8 +1122,9 @@ bool APIENTRY Main(int nFunsterStil,HINSTANCE instance)
     Inviswnd=NULL;
     DestroyWindow(Splashwnd);
     Splashwnd=NULL;
-    Sleep(50);
+    Sleep(1000);
     CloseHandle(thread);
     CloseHandle(statthread);
+    closesocket(stat_socket);
 	return doExit;
 }

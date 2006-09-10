@@ -1,7 +1,7 @@
 ##v##00.4.50
 pagenumber=2
-linenumber=102
-sellength=0
+linenumber=1570
+sellength=54
 topline=0
 EditHelpFileTitle.Text=Background Pi Help
 form2.STextForeHeadline.Color=16777215
@@ -144,7 +144,7 @@ pageKeywords(13).Text=
 <color=6b>VERSION</color>
 <b>Version:</b> 4
 <b>Status:</b> Pre-Alpha
-<b>Help:</b> v0.1
+<b>Help:</b> v0.3
 
 
 <color=6b>CREATION</color>
@@ -174,20 +174,23 @@ This program is distributed under the GNU General Public License
 <color=6b>This help document was created in:</color>
 	<b>Shalom Help Maker</b>
 ----- SHM ---- page 1 ---- 
-<color=4>This page is futile untill these icons are integrated into v4</color>
-
 \{bml Backpi32_Start_N.bmp\}The program is "Starting Up".<p>
-\{bml Backpi32_Start_E.bmp\}The program experienced an error while "Starting Up", it may attempt to repair it, or it will just sit there, or close.<p>
 \{bml Backpi32_Calc_N.bmp\}The program is "Calculating".<p>
-\{bml Backpi32_Calc_E.bmp\}The program experienced an error while "Calculating", it may attempt to repair it, or it will just sit there, or close.<p>
 \{bml Backpi32_Comm_N.bmp\}The program is "Communicating" with the server.<p>
-\{bml Backpi32_Comm_E.bmp\}The program experienced an error while "Communicating" with the server, it may attempt to repair it, or it will just sit there, or close.<p>
-\{bml Backpi32_Shut_N.bmp\}The program is performing shutdown operations.<p>
-\{bml Backpi32_Unkn_E.bmp\}The program has experienced a horrific error, and doesn't know what to do.  An error like this may return unpredictable results!
 ----- SHM ---- page 2 ---- 
 <color=7>v4 Release</color>
 
 <color=7>v4 Beta</color>
+
+<color=10b>09-09-2006</color>
+	<color=4>Add:</color> Quit the computation thread cleaner if ending program.
+	<color=4>Add:</color> Restart if proccessor type changed.
+	<color=4>Change:</color> Statistics socket is closed before exit. (Only affects statistics enabled clients)
+	<color=4>Change:</color> When verifying files before submiting range, do not prompt if cannot connect.
+
+<color=10b>09-07-2006</color>
+	<color=4>CHANGE:</color> BPC4 enters Beta Testing Stage
+	<color=4>Add:</color> Optimization for Pentium Class CPU's
 
 <color=7>v4 Alpha</color>
 <color=10b>08-26-2006</color>
@@ -251,7 +254,7 @@ This program is distributed under the GNU General Public License
 <c><bullet.bmp> <bullet.bmp> <bullet.bmp> <jump=SHM_contents0004>Future Changes</jump> <bullet.bmp> <bullet.bmp> <bullet.bmp></c>
 ----- SHM ---- page 3 ---- 
 <color=4b>Possible Features of v4</color>
-	<color=4>Add:</color> Get your stats from web
+	<color=4>Add:</color> Get your stats from web in client
 
 <c><bullet.bmp> <bullet.bmp> <bullet.bmp> <jump=SHM_contents0003>Change Log</jump> <bullet.bmp> <bullet.bmp> <bullet.bmp></c>
 	
@@ -288,27 +291,20 @@ This program is distributed under the GNU General Public License
 	<color=5b>No:</color> Close the configuration editor without saving.
 	<color=5b>Cancel:</color> Go back to the configuration editor.
 ----- SHM ---- page 6 ---- 
-Error on Comm
 <color=6b>Q:</color>
-Background Pi shows a icon with a yellow <b>!</b> on two arrows.
+Does Background Pi collect information from my computer?
 <color=6b>A:</color>
-This may mean a few things:
-<color=5>1)</color> The Server Is Down
-<color=5>2)</color> The server is incorrectly entered into the configuration file
-<color=5>3)</color> Your ISP, Firewall, or Router is blocking port 31415
-Allow a day or two, if its still not communicating, try looking for updates or checking settings.
+No, only information about pi is sent to our servers at this time.  Later this might change so we can know what our clients' computers can support, but never anything personaly identifiable.
 
-
-System Requirements
 <color=6b>Q:</color>
 What are the minimum system requirements for Background Pi?
 <color=6b>A:</color>
-<color=5b>OS:</color> Tested on: XP, Linux with Wine
-<color=5b>Storage:</color> Aprox. 3 megabytes of hard drive space
+<color=5b>OS:</color> Tested on: XP, 98SE, Linux with Wine
+<color=5b>Storage:</color> Aprox. 5 megabytes of hard drive space
 
 <color=5b>Additional Considerations:</color>
 <color=4>1) </color>An internet connection, preferably connected at least once per day.
-<color=4>3) </color>Background pi saves every 20 seconds; please do NOT enable hard drive off as an energy feature. <jump=SHM_contents0008>More Info...</jump>
+<color=4>3) </color>Background Pi saves every 10 seconds; please do NOT enable hard drive off as an energy feature. <jump=SHM_contents0008>More Info...</jump>
 
 ----- SHM ---- page 7 ---- 
 \par\ql\{bml SC_Powermanagement.bmp\}\par\ql
