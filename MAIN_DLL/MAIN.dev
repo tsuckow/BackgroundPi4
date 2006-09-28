@@ -52,8 +52,8 @@ BuildCmd=
 [VersionInfo]
 Major=1
 Minor=0
-Release=0
-Build=1
+Release=1
+Build=0
 LanguageID=1033
 CharsetID=1252
 CompanyName=Defcon 1 Computer Technologies

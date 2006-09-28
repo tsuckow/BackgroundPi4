@@ -27,6 +27,8 @@ TrayIcon * hGlobalIcon = NULL;
 
 bool Windowlessquit = false;
 
+int timeouti = 1;
+
 typedef bool (WINAPI * winVerifyf)(HINSTANCE);
 winVerifyf UP2DATEVerify;
 
@@ -702,15 +704,18 @@ bool DoComm(mpz_t & counter,mpz_t const & sum)
             //Sit for a while
             
             Stat.Update(6,"Will Retry Soon...");
-            Stat.Update(5,ftods((((float)time(NULL)-(float)sleep_start)/(float)Conf.Timeout*100),2) + "%");
-            Stat.Update(3,Conf.Timeout-((int)time(NULL)-sleep_start));
+            Stat.Update(5,ftods((((float)time(NULL)-(float)sleep_start)/(float)Conf.Timeout*timeouti*100),2) + "%");
+            Stat.Update(3,Conf.Timeout*timeouti-((int)time(NULL)-sleep_start));
             Stat.Update(4,(int)time(NULL)-sleep_start);
-            Stat.Update(7,Conf.Timeout);
-            Sleep(500);
+            Stat.Update(7,Conf.Timeout*timeouti);
+            Sleep(900);
+            timeouti++;
         }    
 		
 		return true; //Need to try again
     }
+    
+    timeouti = 1;
     
     DString Buffer;
 	DString Item;

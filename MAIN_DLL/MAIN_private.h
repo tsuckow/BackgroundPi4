@@ -5,11 +5,11 @@
 #define MAIN_PRIVATE_H
 
 /* VERSION DEFINITIONS */
-#define VER_STRING	"1.0.0.1"
+#define VER_STRING	"1.0.1.0"
 #define VER_MAJOR	1
 #define VER_MINOR	0
-#define VER_RELEASE	0
-#define VER_BUILD	1
+#define VER_RELEASE	1
+#define VER_BUILD	0
 #define COMPANY_NAME	"Defcon 1 Computer Technologies"
 #define FILE_VERSION	"1"
 #define FILE_DESCRIPTION	"Main Stuff"

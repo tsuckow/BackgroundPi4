@@ -10,8 +10,8 @@
 Config::Config()
 {
 	//      DCName		This is Dynamic
-	#define DCHost		"defcon1.hopto.org"
-	#define DCPort		3141
+	#define DCHost		"backpi.hopto.org"
+	#define DCPort		31415
 	#define DCTimeout	30
 	#define DCResume	10
 	#define DCDelay		0
@@ -64,14 +64,13 @@ bool Config::Open() //return false on fail
 				{
 					this->Arch=Value;
 				}
-				if(Item=="Host")
+				else if(Item=="Host")
 				{
 					this->Host=Value;
 				}
 				else if(Item=="Port")
 				{
 					this->Port=atoi(Value);
-					if(this->Port == 31415) this->Port = 3141;
 				}
 				else if(Item=="Resume")
 				{

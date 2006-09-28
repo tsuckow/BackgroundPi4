@@ -31,6 +31,25 @@ LRESULT CALLBACK SplashDialogProcedure (HWND, UINT, WPARAM, LPARAM); //Spalsh Di
 
 HINSTANCE thisinstance = NULL;
 
+DString Host = "backpi.hopto.org";
+short Port = 31415;
+
+bool ParseLine(DString Line, DString & Item, DString & Value)
+{
+     while(Line.Getchar() != '=' && !Line.Isend())
+     {
+                Line.Nextchar();   
+     }
+     if(Line.Getchar() != '=')
+     {
+            return false;
+     }
+     Item=Line.Getsbc();
+     Value=Line.Getspc();
+     
+     return true;
+}
+
 bool DoRecv(SOCKET & handle, DString & Buffer)
 {
 	Buffer="";
@@ -104,6 +123,44 @@ bool ParseCommLine(DString Line, DString & Item, DString & Value)
      return true;
 }
 
+bool ConfigOpen() //return false on fail
+{
+	std::fstream hFile;
+	hFile.open("Config.cfg",std::ios::in);
+	if(hFile.is_open())
+	{
+		char Buffer[1001];
+		while(!hFile.eof())
+		{
+			DString Item;
+			DString Value;
+			hFile.getline(Buffer,1000);
+			if(ParseLine(Buffer,Item,Value))
+			{
+				//Config If's
+				if(Item=="Host")
+				{
+					Host=Value;
+				}
+				else if(Item=="Port")
+				{
+					Port=atoi(Value);
+				}
+				//End Config If's
+			}
+		}
+		hFile.close();
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+	hFile.close();
+	MessageBox(NULL,"Oh Shit.\nConfigOpen","Error: Loader.DLL",MB_OK);
+	return false;
+}
+
 DWORD WINAPI UpdateThread(void*)
 {
 	SendMessage(Splashwnd,WM_SETLOADTEXT,0,(LPARAM)"Connecting To Server...");
@@ -136,17 +193,19 @@ DWORD WINAPI UpdateThread(void*)
     memset(&clientService,'\0',sizeof(clientService)); 
     clientService.sin_family = AF_INET;
     
+	ConfigOpen();
+    
     struct hostent *phostent;
-    if ((phostent = gethostbyname("defcon1.hopto.org")) != NULL)
+    if ((phostent = gethostbyname(Host)) != NULL)
     {
         clientService.sin_addr.s_addr = *(unsigned long*)phostent->h_addr_list[0];
     }    
     else
     {
-        clientService.sin_addr.s_addr = inet_addr("defcon1.hopto.org <- ip");// 32-bit network address
+        clientService.sin_addr.s_addr = inet_addr(Host);// 32-bit network address
     }
        
-    clientService.sin_port = htons( 3141 ); //PORT
+    clientService.sin_port = htons( Port ); //PORT
 
     if ( connect( m_socket, (SOCKADDR*) &clientService, sizeof(clientService) ) == SOCKET_ERROR)
     {
