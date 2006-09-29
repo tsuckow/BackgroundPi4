@@ -207,13 +207,18 @@ DWORD WINAPI UpdateThread(void*)
        
     clientService.sin_port = htons( Port ); //PORT
 
-    if ( connect( m_socket, (SOCKADDR*) &clientService, sizeof(clientService) ) == SOCKET_ERROR)
+    for(short i = 1; connect( m_socket, (SOCKADDR*) &clientService, sizeof(clientService) ) == SOCKET_ERROR ; i++)
     {
-        WSACleanup();
-        if(!Verifying) MessageBox(NULL,"Background Pi Client FAILED to connect to the server.\nTry verifing settings.","Winsock",MB_OK);
-		Windowlessquit = true;
-		PostMessage(Inviswnd,WM_RQUIT,0,0);
-        ExitThread(0);
+        
+        //MessageBox(NULL,"Background Pi Client FAILED to connect to the server.\nTry verifing settings.","Winsock",MB_OK);
+		Sleep(1000);
+		if(i = 5)
+		{
+			WSACleanup();
+			Windowlessquit = true;
+			PostMessage(Inviswnd,WM_RQUIT,0,0);
+        	ExitThread(0);
+		}
     }
     
 	SendMessage(Splashwnd,WM_SETLOADTEXT,0,(LPARAM)"Checking For Updates...");
@@ -487,6 +492,10 @@ bool APIENTRY Verify(HINSTANCE instance)
 
 bool APIENTRY Update(int nFunsterStil,HINSTANCE instance)
 {
+	if(OpenMutex(MUTEX_ALL_ACCESS, false, "BackPi4")!=NULL) return true;
+	
+	HANDLE PMutex = CreateMutex(NULL, false, "BackPi4");
+	
 	thisinstance = instance;
 	
 	//Display Splash Screen If NOT started in minimized
@@ -529,6 +538,8 @@ bool APIENTRY Update(int nFunsterStil,HINSTANCE instance)
     Inviswnd=NULL;
     Sleep(50);
     CloseHandle(thread);
+    ReleaseMutex(PMutex);
+    CloseHandle(PMutex);
 	return Update_Updater;
 }
 

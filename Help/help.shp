@@ -1,6 +1,6 @@
 ##v##00.4.50
 pagenumber=2
-linenumber=316
+linenumber=47
 sellength=0
 topline=0
 EditHelpFileTitle.Text=Background Pi Help
@@ -179,6 +179,9 @@ This program is distributed under the GNU General Public License
 \{bml Backpi32_Comm_N.bmp\}The program is "Communicating" with the server.<p>
 ----- SHM ---- page 2 ---- 
 <color=7>v4 Release</color>
+
+<color=10b>09-29-2006</color>
+	<color=4>Add:</color> Multiple instances can no longer be created
 
 <color=10b>09-28-2006</color>
 	<color=4>Change:</color> Retry time increases on each failed attempt when connecting to server after calculating

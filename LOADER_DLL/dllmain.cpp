@@ -95,6 +95,14 @@ bool FileMove(DString Src, DString Dst)
 
 bool APIENTRY Load(bool Update_Updater, int nFunsterStil,HINSTANCE thisinstance)
 {
+	if(OpenMutex(MUTEX_ALL_ACCESS, false, "BackPi4")!=NULL)
+	{
+		MessageBox(NULL,"Background Pi 4 is already running.","ERROR: LOADER.DLL",MB_OK);
+		return true;
+	}
+	
+	HANDLE PMutex = CreateMutex(NULL, FALSE, "BackPi4");
+	
 	HINSTANCE hLib=NULL;
 	if(Update_Updater==true)
 	{
@@ -114,6 +122,8 @@ bool APIENTRY Load(bool Update_Updater, int nFunsterStil,HINSTANCE thisinstance)
 		Updater(nFunsterStil,hLib);
 		FreeLibrary(hLib);
 		Updater=NULL;
+		ReleaseMutex(PMutex);
+    	CloseHandle(PMutex);
 		return false;
     }
     else
@@ -153,6 +163,11 @@ bool APIENTRY Load(bool Update_Updater, int nFunsterStil,HINSTANCE thisinstance)
 		Temp=Main(nFunsterStil,hLib);
 		FreeLibrary(hLib);
 		Main=NULL;
+		if(!Temp) 
+		{
+			ReleaseMutex(PMutex);
+    		CloseHandle(PMutex);
+		}
 		return Temp;
     }
     MessageBox(NULL,"Oh Shit.","Loader.DLL",MB_OK);
