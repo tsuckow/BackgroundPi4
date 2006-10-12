@@ -270,6 +270,7 @@ class TrayIcon
 		NOTIFYICONDATA tnd;
 		HINSTANCE iconinstance;
 		DString tiptext;
+		char icon;
 };
 
 extern TrayIcon * hGlobalIcon;

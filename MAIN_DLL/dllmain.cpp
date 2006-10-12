@@ -36,7 +36,8 @@ winVerifyf UP2DATEVerify;
 TrayIcon::TrayIcon(HINSTANCE instance)
 {
 	iconinstance=instance;
-	tiptext = "Background Pi v4";
+	this->tiptext = "Background Pi v4";
+	this->icon = 'B';
 	Add();
 }
 
@@ -53,12 +54,13 @@ void TrayIcon::Add()
     this->tnd.cbSize = sizeof(NOTIFYICONDATA);
     this->tnd.hWnd = Inviswnd;
     this->tnd.uCallbackMessage = WM_NOTIFYICON;
-    this->tnd.hIcon = LoadIcon(iconinstance,"B");
+    this->tnd.hIcon = LoadIcon(iconinstance,(DString)this->icon);
     Shell_NotifyIcon(NIM_ADD, &this->tnd);
 }
 
 void TrayIcon::Update(char Ico)
 {
+	this ->icon = Ico;
 	this->tnd.hIcon = LoadIcon(iconinstance,(DString)Ico);
 	Shell_NotifyIcon(NIM_MODIFY, &this->tnd);
 }
@@ -78,9 +80,8 @@ void DIVN(mpz_t & t,const mpz_t & a,mpz_t & v,const int & vinc,mpz_t & kq,const 
         if (mpz_cmp_ui(kq,0) == 0)
 		{
 			mpz_t temp;
-    		mpz_init(temp);
+    		mpz_init_set_si(temp,vinc);
             
-			mpz_set_si(temp,vinc);
             mpz_addmul_ui(v,temp,mpz_remove(t,t,a));
         	
         	mpz_clear(temp);
@@ -93,11 +94,12 @@ int is_prime(const mpz_t & n)
     if (mpz_divisible_ui_p(n,2) != 0) return false;
 
 	mpz_t r,i;
-    mpz_init (i);
-    mpz_init (r);
     
-	mpz_sqrt(r,n);
-    for(mpz_set_ui(i,3);mpz_cmp(i,r)<=0;mpz_add_ui(i,i,2))
+    mpz_init (r);
+    mpz_sqrt(r,n);
+    
+	mpz_init_set_ui(i,3);
+    for(/*(Set above) mpz_set_ui(i,3)*/;mpz_cmp(i,r)<=0;mpz_add_ui(i,i,2))
     {
         if (mpz_divisible_p(n,i) != 0)
         {
@@ -412,8 +414,8 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
 	for(mpz_set_ui(k,1) ; mpz_cmp(k,N) <= 0 ; mpz_add_ui(k,k,1))
     {
 		if(Windowlessquit) ExitThread(0);
-        mpz_mul_ui(temp,k,2);
-        mpz_set(t,temp);
+        mpz_mul_ui(t,k,2);
+        //mpz_set(t,temp); Why not just set it above?!?!?!
         DIVN(t,a,v,-1,kq1,2);
 
         mpz_mul(num,num,t);
