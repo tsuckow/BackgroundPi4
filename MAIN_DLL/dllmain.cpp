@@ -414,8 +414,8 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
 	for(mpz_set_ui(k,1) ; mpz_cmp(k,N) <= 0 ; mpz_add_ui(k,k,1))
     {
 		if(Windowlessquit) ExitThread(0);
-        mpz_mul_ui(t,k,2);
-        //mpz_set(t,temp); Why not just set it above?!?!?!
+        mpz_mul_ui(temp,k,2);
+        mpz_set(t,temp);//Do not combine with line above! temp is used below!
         DIVN(t,a,v,-1,kq1,2);
 
         mpz_mul(num,num,t);
