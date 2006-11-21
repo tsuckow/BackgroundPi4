@@ -988,7 +988,8 @@ DWORD WINAPI MainThread(void*)
     	{
         	double tempd;
         	hFile >> tempd;
-        	mpz_set_d(counter,tempd);
+        	
+			mpz_set_d(counter,tempd);
         	hFile.close();
     	}
 	}
@@ -1004,14 +1005,11 @@ DWORD WINAPI MainThread(void*)
         mpz_mul_ui(counter,counter,9);
         
         //Slight Increase in number
-        if (counter <= 0)
+        if (mpz_cmp_ui(counter,0) < 0)
         {
-            mpz_set_ui(counter,1);
+            mpz_set_ui(counter,0);
         }
-        if (mpz_cmp_ui(counter,1) > 0)
-        {
-            mpz_add_ui(counter,counter,1);
-        }
+        mpz_add_ui(counter,counter,1);
         
         //Set Thread Priority For Calc
         SetThreadPriority(GetCurrentThread(),THREAD_PRIORITY_IDLE);
