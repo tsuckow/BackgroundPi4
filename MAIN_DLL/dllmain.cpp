@@ -701,19 +701,26 @@ bool DoComm(mpz_t & counter,mpz_t const & sum)
          
         time_t sleep_start;
         time(&sleep_start);
-        while(((int)time(NULL)-sleep_start) < (Conf.Timeout))
+        while(((int)time(NULL)-sleep_start) < (Conf.Timeout*timeouti))
         {
             //Sit for a while
             
             Stat.Update(6,"Will Retry Soon...");
-            Stat.Update(5,ftods((((float)time(NULL)-(float)sleep_start)/(float)Conf.Timeout*timeouti*100),2) + "%");
-            Stat.Update(3,Conf.Timeout*timeouti-((int)time(NULL)-sleep_start));
-            Stat.Update(4,(int)time(NULL)-sleep_start);
-            Stat.Update(7,Conf.Timeout*timeouti);
-            Sleep(900);
-            timeouti++;
+            Stat.Update(5,ftods( ((float)time(NULL)-(float)sleep_start )/((float)Conf.Timeout*timeouti)*100 ,2) + "%");
+            
+			mpz_t ttemp;
+            mpz_init_set_ui(ttemp,(int)time(NULL)-sleep_start);
+			Stat.Update(4,timeformat(ttemp));
+			
+			mpz_set_ui(ttemp,Conf.Timeout*timeouti-((int)time(NULL)-sleep_start));
+            Stat.Update(3,timeformat(ttemp));
+            
+            mpz_set_ui(ttemp,(Conf.Timeout*timeouti));
+            Stat.Update(7,timeformat(ttemp));
+            
+            Sleep(500);
         }    
-		
+		timeouti++;
 		return true; //Need to try again
     }
     

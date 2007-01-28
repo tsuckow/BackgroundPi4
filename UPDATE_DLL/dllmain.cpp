@@ -454,7 +454,7 @@ bool APIENTRY Verify(HINSTANCE instance)
 	
 	thisinstance = instance;
 	
-	//Display Splash Screen If NOT started in minimized
+	//Create MSG WIndow
 	Inviswnd = CreateDialog(thisinstance,MAKEINTRESOURCE(IDD_INVIS),NULL,(DLGPROC)InvisDialogProcedure);
 	
 	DWORD threadId;

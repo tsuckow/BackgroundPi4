@@ -47,12 +47,12 @@ LRESULT CALLBACK InvisDialogProcedure (HWND hwnd, UINT message, WPARAM wParam, L
 			Windowlessquit = true;
 			PostQuitMessage(0);
 			break;
-		case WM_QUERYENDSESSION:
-			return true;
+//			/*
 		case WM_ENDSESSION:
 			Windowlessquit = true;
 			PostQuitMessage(0);
 			return 0;
+//			*/
 		case WM_COMMAND:
             switch(LOWORD(wParam))
             {
