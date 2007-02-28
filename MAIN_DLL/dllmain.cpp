@@ -414,7 +414,8 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
 	for(mpz_set_ui(k,1) ; mpz_cmp(k,N) <= 0 ; mpz_add_ui(k,k,1))
     {
 		if(Windowlessquit) ExitThread(0);
-        mpz_mul_ui(temp,k,2);
+        //mpz_mul_ui(temp,k,2);
+        mpz_mul_2exp(temp,k,1);
         mpz_set(t,temp);//Do not combine with line above! temp is used below!
         DIVN(t,a,v,-1,kq1,2);
 
@@ -440,7 +441,8 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
 		
         if (mpz_cmp_ui(a,2) != 0)
         {
-            mpz_mul_ui(t,t,2);
+            //mpz_mul_ui(t,t,2);
+            mpz_mul_2exp(t,t,1);
 		}
 		else
         {
