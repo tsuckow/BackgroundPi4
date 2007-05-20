@@ -33,6 +33,7 @@ HINSTANCE thisinstance = NULL;
 
 DString Host = "backpi.hopto.org";
 short Port = 31415;
+bool doMutex = true;
 
 bool ParseLine(DString Line, DString & Item, DString & Value)
 {
@@ -146,6 +147,10 @@ bool ConfigOpen() //return false on fail
 				{
 					Port=atoi(Value);
 				}
+				else if(Item=="OneInstance")
+				{
+					doMutex=(bool)atoi(Value);
+				}
 				//End Config If's
 			}
 		}
@@ -193,7 +198,7 @@ DWORD WINAPI UpdateThread(void*)
     memset(&clientService,'\0',sizeof(clientService)); 
     clientService.sin_family = AF_INET;
     
-	ConfigOpen();
+	//ConfigOpen();
     
     struct hostent *phostent;
     if ((phostent = gethostbyname(Host)) != NULL)
@@ -492,9 +497,13 @@ bool APIENTRY Verify(HINSTANCE instance)
 
 bool APIENTRY Update(int nFunsterStil,HINSTANCE instance)
 {
-	if(OpenMutex(MUTEX_ALL_ACCESS, false, "BackPi4")!=NULL) return true;
+	ConfigOpen();
 	
-	HANDLE PMutex = CreateMutex(NULL, false, "BackPi4");
+	if(doMutex) if(OpenMutex(MUTEX_ALL_ACCESS, false, "BackPi4")!=NULL) return true;
+	
+	HANDLE PMutex = NULL;
+	
+	if(doMutex) PMutex = CreateMutex(NULL, false, "BackPi4");
 	
 	thisinstance = instance;
 	
