@@ -61,6 +61,7 @@ class Config
 		DString Name;
 		bool Stats;
 		DString Arch;
+		bool doMutex;
 		
 };
 

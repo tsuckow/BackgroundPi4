@@ -499,11 +499,19 @@ bool APIENTRY Update(int nFunsterStil,HINSTANCE instance)
 {
 	ConfigOpen();
 	
-	if(doMutex) if(OpenMutex(MUTEX_ALL_ACCESS, false, "BackPi4")!=NULL) return true;
-	
 	HANDLE PMutex = NULL;
 	
-	if(doMutex) PMutex = CreateMutex(NULL, false, "BackPi4");
+	if(OpenMutex(MUTEX_ALL_ACCESS, false, "BackPi4")!=NULL)
+	{
+		if(doMutex)
+		{
+			return true;
+		}
+	}
+	else
+	{
+		PMutex = CreateMutex(NULL, FALSE, "BackPi4");
+	}
 	
 	thisinstance = instance;
 	

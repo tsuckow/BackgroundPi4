@@ -17,6 +17,7 @@ Config::Config()
 	#define DCDelay		0
 	#define DCStats		false
 	#define DCArch		"i386"
+	#define DCdoMutex	true
 	
 	//Defaults
 	this->Name = (DString)"Guest" + (DString)time(NULL) + (DString)rand();
@@ -27,6 +28,7 @@ Config::Config()
 	this->Delay = DCDelay;
 	this->Stats = DCStats;
 	this->Arch = DCArch;
+	this->doMutex = DCdoMutex;
 }
 
 bool ParseLine(DString Line, DString & Item, DString & Value)
@@ -92,6 +94,10 @@ bool Config::Open() //return false on fail
 				{
 					this->Name=Value;
 				}
+				else if(Item=="OneInstance")
+				{
+					this->doMutex=(bool)atoi(Value);
+				}
 				//End Config If's
 			}
 		}
@@ -121,6 +127,7 @@ bool Config::Save()
 		if( this->Delay != DCDelay )		hFile << "Delay=" << this->Delay << std::endl;
 		if( this->Arch != DCArch )			hFile << "CPUArch=" << this->Arch << std::endl;
 		if( this->Stats != DCStats )		hFile << "Stats=" << this->Stats << std::endl;
+		if( this->doMutex != DCdoMutex )		hFile << "OneInstance=" << this->Stats << std::endl;
 		return true;
 	}
 	else

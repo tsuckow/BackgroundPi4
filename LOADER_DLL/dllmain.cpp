@@ -13,6 +13,7 @@ winUpdater Updater;
 winMainf Main;
 
 DString Arch = "i386";//Default CPU Arch for GMP
+bool doMutex = true; //Default Single Instance of program
 
 bool ParseLine(DString Line, DString & Item, DString & Value)
 {
@@ -48,6 +49,10 @@ bool ConfigOpen() //return false on fail
 				if(Item=="CPUArch")
 				{
 					Arch=Value;
+				}
+				else if(Item=="OneInstance")
+				{
+					doMutex=(bool)atoi(Value);
 				}
 				//End Config If's
 			}
@@ -95,13 +100,22 @@ bool FileMove(DString Src, DString Dst)
 
 bool APIENTRY Load(bool Update_Updater, int nFunsterStil,HINSTANCE thisinstance)
 {
+	ConfigOpen();
+	
+	HANDLE PMutex = NULL;
+	
 	if(OpenMutex(MUTEX_ALL_ACCESS, false, "BackPi4")!=NULL)
 	{
-		MessageBox(NULL,"Background Pi 4 is already running.","ERROR: LOADER.DLL",MB_OK);
-		return true;
+		if(doMutex)
+		{
+			MessageBox(NULL,"Background Pi 4 is already running.","ERROR: LOADER.DLL",MB_OK);
+			return true;
+		}
 	}
-	
-	HANDLE PMutex = CreateMutex(NULL, FALSE, "BackPi4");
+	else
+	{
+		PMutex = CreateMutex(NULL, FALSE, "BackPi4");
+	}
 	
 	HINSTANCE hLib=NULL;
 	if(Update_Updater==true)
@@ -131,7 +145,7 @@ bool APIENTRY Load(bool Update_Updater, int nFunsterStil,HINSTANCE thisinstance)
 		
 		//What CPU we running?
 		
-		ConfigOpen();
+		//ConfigOpen();
 		
 		//Put the GMP DLL into place
 		
