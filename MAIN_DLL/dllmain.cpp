@@ -351,7 +351,16 @@ void DoCalc(mpz_t const & counter,mpz_t & sum)
   for(;mpz_cmp(a,N3) <= 0;next_prime(a,a,N3))
   {
     if(Windowlessquit) ExitThread(0);
-    //Update Status
+    /*LPSYSTEM_POWER_STATUS aaa;
+    GetSystemPowerStatus(aaa);
+    if(aaa.ACLineStatus == 0)
+    {
+    	Stat.Update(6,"Running on Battery...");
+    	Sleep(5000);
+	}*/
+	//Update Status
+    
+    Stat.Update(6,"Calculating...");
     
     percentc(tempf,a,N3);
     Stat.Update(5,ftods(mpf_get_d(tempf),3) + "%");
